@@ -1,0 +1,14 @@
+Nov3:
+Finished the design of the protocol and state machine
+
+Nov4:
+packet encoder/decoder with unit test
+
+Nov5:
+protocol state machine with unit test
+
+Nov6:
+protocol magic number generator with unit test
+
+Nov7:
+
