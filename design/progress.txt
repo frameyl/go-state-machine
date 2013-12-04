@@ -2,13 +2,16 @@ Nov3:
 Finished the design of the protocol and state machine
 
 Nov4:
+packet struct
+
+Nov5
 packet encoder/decoder with unit test
 
-Nov5:
+tbd:
 protocol state machine with unit test
 
-Nov6:
+tbd:
 protocol magic number generator with unit test
 
-Nov7:
+Nov9:
 
