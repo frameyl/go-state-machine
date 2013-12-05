@@ -1,6 +1,7 @@
 package ssmp
 
 //import "fmt"
+import "encoding/binary"
 
 const LEN_PROTO_NAME = 16
 const LEN_MSG_NAME = 8
@@ -33,7 +34,10 @@ type Packet_confirm struct {
 }
 
 func (hdr Packet_header)encode(buf []byte) (err error) {
-    buf = append(buf, hdr.Proto_name, hdr.Msg_name, hdr.Magic_number, hdr.Server_id)
+    buf = append(buf, hdr.Proto_name[:]...)
+    buf = append(buf, hdr.Msg_name[:]...)
+    buf = append(buf, hdr.Magic_number[:]...)
+    buf = append(buf, hdr.Server_id[:]...)
     return nil
 }
 
@@ -51,8 +55,9 @@ func (hdr Packet_reply)encode(buf []byte) (err error) {
         return err
     }
 
-    sid := [4]byte(hdr.Session_id)
-    buf = append(buf, sid)
+    sid := make([]byte, 4)
+    binary.LittleEndian.PutUint32(sid, hdr.Session_id)
+    buf = append(buf, sid[:]...)
     return nil
 }
 
@@ -62,8 +67,9 @@ func (hdr Packet_confirm)encode(buf []byte) (err error) {
         return err
     }
 
-    sid := [4]byte(hdr.Session_id)
-    buf = append(buf, sid)
+    sid := make([]byte, 4)
+    binary.LittleEndian.PutUint32(sid, hdr.Session_id)
+    buf = append(buf, sid[:]...)
     return nil
 }
 
