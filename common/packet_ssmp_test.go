@@ -78,6 +78,11 @@ func TestPacketReplyEncode(t *testing.T) {
     buf = []byte{}
     buf, err = pktConfirm.Encode(buf)
     checkEncodedBuf(err, buf, expected, "Encode confirm", t)
+    
+    pktDisconnect := Packet_disconnect{pktReply}
+    buf = []byte{}
+    buf, err = pktDisconnect.Encode(buf)
+    checkEncodedBuf(err, buf, expected, "Encode disconnect", t)
 }
 
 func checkEncodedBuf(err error, buf, expected []byte, errStr string, t *testing.T) {
