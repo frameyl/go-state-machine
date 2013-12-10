@@ -46,6 +46,14 @@ func EncodeFieldFixedLen(buf []byte, field []byte, length int) (result []byte, e
     return
 }
 
+func EncodeFieldUint32(buf []byte, field uint32) (result []byte, err error) {
+    sid := make([]byte, 4)
+    err = nil
+    binary.BigEndian.PutUint32(sid, field)
+    result = append(buf, sid...)
+    return
+}
+
 func (hdr Packet_header)Encode(buf []byte) (result []byte, err error) {
     result, err = EncodeFieldFixedLen(buf, hdr.Proto_name, LEN_PROTO_NAME)
     if err != nil {
@@ -80,10 +88,7 @@ func (hdr Packet_reply)Encode(buf []byte) (result []byte, err error) {
         return buf, err
     }
 
-    sid := make([]byte, 4)
-    binary.LittleEndian.PutUint32(sid, hdr.Session_id)
-    result = append(result, sid...)
-    return
+    return EncodeFieldUint32(result, hdr.Session_id)
 }
 
 func (hdr Packet_confirm)Encode(buf []byte) (result []byte, err error) {
@@ -91,11 +96,8 @@ func (hdr Packet_confirm)Encode(buf []byte) (result []byte, err error) {
     if err != nil {
         return buf, err
     }
-
-    sid := make([]byte, 4)
-    binary.LittleEndian.PutUint32(sid, hdr.Session_id)
-    result = append(result, sid...)
-    return
+    
+    return EncodeFieldUint32(result, hdr.Session_id)
 }
 
 
