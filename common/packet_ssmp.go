@@ -29,8 +29,11 @@ type Packet_reply struct {
 }
 
 type Packet_confirm struct {
-    Packet_header
-    Session_id      uint32
+    Packet_reply
+}
+
+type Packet_disconnect struct {
+    Packet_reply
 }
 
 func EncodeFieldFixedLen(buf []byte, field []byte, length int) (result []byte, err error) {
@@ -42,7 +45,7 @@ func EncodeFieldFixedLen(buf []byte, field []byte, length int) (result []byte, e
         padding := make([]byte, length-len(field))
         result = append(result, padding...)
     }
-    
+
     return
 }
 
@@ -74,6 +77,7 @@ func (hdr Packet_header)Encode(buf []byte) (result []byte, err error) {
     return
 }
 
+/*
 func (hdr Packet_hello)Encode(buf []byte) (result []byte, err error) {
     return hdr.Packet_header.Encode(buf)
 }
@@ -81,6 +85,7 @@ func (hdr Packet_hello)Encode(buf []byte) (result []byte, err error) {
 func (hdr Packet_request)Encode(buf []byte) (result []byte, err error) {
     return hdr.Packet_header.Encode(buf)
 }
+*/
 
 func (hdr Packet_reply)Encode(buf []byte) (result []byte, err error) {
     result, err = hdr.Packet_header.Encode(buf)
@@ -91,14 +96,14 @@ func (hdr Packet_reply)Encode(buf []byte) (result []byte, err error) {
     return EncodeFieldUint32(result, hdr.Session_id)
 }
 
+/*
 func (hdr Packet_confirm)Encode(buf []byte) (result []byte, err error) {
     result, err = hdr.Packet_header.Encode(buf)
     if err != nil {
         return buf, err
     }
-    
+
     return EncodeFieldUint32(result, hdr.Session_id)
 }
-
-
+*/
 

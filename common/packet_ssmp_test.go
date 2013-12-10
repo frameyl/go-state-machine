@@ -74,7 +74,7 @@ func TestPacketReplyEncode(t *testing.T) {
     buf, err = pktReply.Encode(buf)
     checkEncodedBuf(err, buf, expected, "Encode reply", t)
 
-    pktConfirm := Packet_confirm{pktReply.Packet_header, pktReply.Session_id}
+    pktConfirm := Packet_confirm{pktReply}
     buf = []byte{}
     buf, err = pktConfirm.Encode(buf)
     checkEncodedBuf(err, buf, expected, "Encode confirm", t)
