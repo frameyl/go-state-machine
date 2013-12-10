@@ -11,6 +11,12 @@ Dec10:
 finish unit test of packet encoder
 
 Dec11:
+finish packet encode disconnect part
+
+Dec12:
+packet decoder and unit test
+
+Dec13:
 protocol state machine with unit test
 
 tbd:
