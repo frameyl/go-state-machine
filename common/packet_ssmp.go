@@ -77,33 +77,44 @@ func (hdr Packet_header)Encode(buf []byte) (result []byte, err error) {
     return
 }
 
-/*
-func (hdr Packet_hello)Encode(buf []byte) (result []byte, err error) {
-    return hdr.Packet_header.Encode(buf)
-}
-
-func (hdr Packet_request)Encode(buf []byte) (result []byte, err error) {
-    return hdr.Packet_header.Encode(buf)
-}
-*/
-
-func (hdr Packet_reply)Encode(buf []byte) (result []byte, err error) {
-    result, err = hdr.Packet_header.Encode(buf)
+func (reply Packet_reply)Encode(buf []byte) (result []byte, err error) {
+    result, err = reply.Packet_header.Encode(buf)
     if err != nil {
         return buf, err
     }
 
-    return EncodeFieldUint32(result, hdr.Session_id)
+    return EncodeFieldUint32(result, reply.Session_id)
 }
 
-/*
-func (hdr Packet_confirm)Encode(buf []byte) (result []byte, err error) {
-    result, err = hdr.Packet_header.Encode(buf)
+
+func (hdr *Packet_header)Decode(buf []byte, offset *int) (err error) {
+    field := []byte{}
+    hdr.Proto_name = append(field, buf[*offset:*offset+LEN_PROTO_NAME]...)
+    *offset += LEN_PROTO_NAME
+
+    field = []byte{}
+    hdr.Msg_name = append(field, buf[*offset:*offset+LEN_MSG_NAME]...)
+    *offset += LEN_MSG_NAME
+
+    field = []byte{}
+    hdr.Magic_number = append(field, buf[*offset:*offset+LEN_MAGIC_NUMBER]...)
+    *offset += LEN_MAGIC_NUMBER
+
+    field = []byte{}
+    hdr.Server_id = append(field, buf[*offset:*offset+LEN_SERVER_ID]...)
+    *offset += LEN_SERVER_ID
+
+    return nil
+}
+
+func (reply *Packet_reply)Decode(buf []byte, offset *int) (err error) {
+    err = reply.Packet_header.Decode(buf, offset)
     if err != nil {
-        return buf, err
+        return
     }
 
-    return EncodeFieldUint32(result, hdr.Session_id)
+    reply.Session_id = binary.BigEndian.Uint32(buf[*offset:*offset+4])
+    *offset += 4
+    return nil
 }
-*/
 
