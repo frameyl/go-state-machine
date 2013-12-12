@@ -78,7 +78,7 @@ func TestPacketReplyEncode(t *testing.T) {
     buf = []byte{}
     buf, err = pktConfirm.Encode(buf)
     checkEncodedBuf(err, buf, expected, "Encode confirm", t)
-    
+
     pktDisconnect := Packet_disconnect{pktReply}
     buf = []byte{}
     buf, err = pktDisconnect.Encode(buf)
@@ -99,4 +99,73 @@ func checkEncodedBuf(err error, buf, expected []byte, errStr string, t *testing.
     }
 }
 
+func TestDecodePacketHeader(t *testing.T) {
+    buf := []byte{'s', 's', 'm', 'p', ' ', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        'h', 'e', 'a', 'd', 'e', 'r', 0, 0,
+        'm', 'a', 'g', '7', 'M', 'A', 'G', '8',
+        'S', 'l', 'i', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    offset := int(0)
+    hdr := Packet_header{}
+    expected := Packet_header{}
+    expected.Proto_name = []byte("ssmp v1")
+    expected.Msg_name = []byte("header")
+    expected.Magic_number = []byte("mag7MAG8")
+    expected.Server_id = []byte("Slient Lamp")
+    var err error
+
+    err = hdr.Decode(buf, &offset)
+    if err != nil {
+        t.Errorf("Decode header failed, return a non-nil")
+    }
+
+    checkFieldDecode(t, hdr.Proto_name, expected.Proto_name, "Decode Packet_header.Proto_name failed")
+    checkFieldDecode(t, hdr.Msg_name, expected.Msg_name, "Decode Packet_header.Msg_name failed")
+    checkFieldDecode(t, hdr.Magic_number, expected.Magic_number, "Decode Packet_header.Magic_number failed")
+    checkFieldDecode(t, hdr.Server_id, expected.Server_id, "Decode Packet_header.Server_id failed")
+}
+
+func TestDecodePacketReply(t *testing.T) {
+    buf := []byte{'s', 's', 'm', 'p', ' ', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        'h', 'e', 'a', 'd', 'e', 'r', 0, 0,
+        'm', 'a', 'g', '7', 'M', 'A', 'G', '8',
+        'S', 'l', 'i', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x1a, 0x2b, 0x3c, 0x4d }
+    offset := int(0)
+    reply := Packet_reply{}
+    expected := Packet_reply{}
+    expected.Proto_name = []byte("ssmp v1")
+    expected.Msg_name = []byte("header")
+    expected.Magic_number = []byte("mag7MAG8")
+    expected.Server_id = []byte("Slient Lamp")
+    expected.Session_id = 0x1a2b3c4d
+    var err error
+
+    err = reply.Decode(buf, &offset)
+    if err != nil {
+        t.Errorf("Decode reply failed, return a non-nil")
+    }
+
+    checkFieldDecode(t, reply.Proto_name, expected.Proto_name, "Decode Packet_reply.Proto_name failed")
+    checkFieldDecode(t, reply.Msg_name, expected.Msg_name, "Decode Packet_reply.Msg_name failed")
+    checkFieldDecode(t, reply.Magic_number, expected.Magic_number, "Decode Packet_reply.Magic_number failed")
+    checkFieldDecode(t, reply.Server_id, expected.Server_id, "Decode Packet_reply.Server_id failed")
+
+    if (expected.Session_id != reply.Session_id) {
+        t.Errorf("Decode Packet_repy.Session_id failed, expected %v, actaul %v", expected.Session_id, reply.Session_id)
+    }
+}
+
+func checkFieldDecode(t *testing.T, field, expected []byte, errStr string) {
+    if len(field) != len(expected) {
+        t.Errorf("%s failed, expected len %v, actual %v", errStr, len(expected), len(field))
+    } else {
+        for i, element := range field {
+            if element != expected[i] {
+                t.Errorf("%s failed, expected[%v] %v, actual[%v] %v", errStr, i, expected[i], i, element)
+            }
+        }
+    }
+}
 

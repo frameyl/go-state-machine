@@ -2,6 +2,7 @@ package ssmp
 
 //import "fmt"
 import "encoding/binary"
+import "bytes"
 
 const LEN_PROTO_NAME = 16
 const LEN_MSG_NAME = 8
@@ -88,20 +89,24 @@ func (reply Packet_reply)Encode(buf []byte) (result []byte, err error) {
 
 
 func (hdr *Packet_header)Decode(buf []byte, offset *int) (err error) {
+    index := bytes.IndexByte(buf[*offset:*offset+LEN_PROTO_NAME], 0)
     field := []byte{}
-    hdr.Proto_name = append(field, buf[*offset:*offset+LEN_PROTO_NAME]...)
+    hdr.Proto_name = append(field, buf[*offset:*offset+index]...)
     *offset += LEN_PROTO_NAME
 
+    index = bytes.IndexByte(buf[*offset:*offset+LEN_PROTO_NAME], 0)
     field = []byte{}
-    hdr.Msg_name = append(field, buf[*offset:*offset+LEN_MSG_NAME]...)
+    hdr.Msg_name = append(field, buf[*offset:*offset+index]...)
     *offset += LEN_MSG_NAME
 
+    index = bytes.IndexByte(buf[*offset:*offset+LEN_PROTO_NAME], 0)
     field = []byte{}
     hdr.Magic_number = append(field, buf[*offset:*offset+LEN_MAGIC_NUMBER]...)
     *offset += LEN_MAGIC_NUMBER
 
+    index = bytes.IndexByte(buf[*offset:*offset+LEN_PROTO_NAME], 0)
     field = []byte{}
-    hdr.Server_id = append(field, buf[*offset:*offset+LEN_SERVER_ID]...)
+    hdr.Server_id = append(field, buf[*offset:*offset+index]...)
     *offset += LEN_SERVER_ID
 
     return nil
