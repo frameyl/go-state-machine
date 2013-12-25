@@ -50,7 +50,7 @@ func (dq *DispatcherQ)Start() (err error) {
 func (dq *DispatcherQ)Stop() (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
-        dispatch.GetCntlChan() <- 0
+        dispatch.GetCntlChan() <- SSMP_DISP_CLOSE
     }
     return nil
 }
