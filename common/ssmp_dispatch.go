@@ -12,20 +12,20 @@ type SsmpDispatch struct {
     // Channel of packet buffer
     bufChan chan bytes.Reader
     // Channel of control message
-    cntlChan chan SsmpDispCmd
+    cntlChan chan int
+    // Channel of register
+    regChan chan SsmpDispatchReg
     // Map from Magic Number to FSM input channel
     mapInput map[uint64] chan bytes.Reader
 }
 
-const SSMP_DISP_CLOSE       = 0
-const SSMP_DISP_REG         = 1
-const SSMP_DISP_UNREG       = 2
-
-type SsmpDispCmd struct {
-    Cmd         int
-    MagicNum    uint64
-    FsmChan     chan bytes.Reader
+type SsmpDispatchReg struct {
+    Magic uint64
+    BufChan chan bytes.Reader
 }
+
+const SSMP_DISP_CLOSE       = 0
+const SSMP_DISP_RESET       = 1
 
 func NewSsmpDispatch(n string) *SsmpDispatch {
     disp := &SsmpDispatch{name: n}
@@ -41,8 +41,24 @@ func (disp SsmpDispatch)GetBufChan() chan bytes.Reader {
     return disp.bufChan
 }
 
-func (disp SsmpDispatch)GetCntlChan() chan SsmpDispCmd {
-    return disp.cntlChan
+func (disp SsmpDispatch)Close() error {
+    disp.cntlChan <- SSMP_DISP_CLOSE 
+    return nil   
+}
+
+func (disp SsmpDispatch)Reset() error {
+    disp.cntlChan <- SSMP_DISP_RESET
+    return nil
+}
+
+func (disp SsmpDispatch)Register(magic uint64, bufChan chan bytes.Reader) error {
+    disp.regChan <- SsmpDispatchReg{magic, bufChan}
+    return nil
+}
+
+func (disp SsmpDispatch)Unregister(magic uint64) error {
+    disp.regChan <- SsmpDispatchReg{magic, nil}
+    return nil
 }
 
 func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
@@ -74,20 +90,25 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
 
         case cmd := <-disp.cntlChan:
             // Command 0 means terminate the routine
-            if cmd.Cmd == SSMP_DISP_CLOSE {
-                break
-            } else if cmd.Cmd == SSMP_DISP_REG {
-                if _, ok := disp.mapInput[cmd.MagicNum]; ok {
-                    fmt.Printf("Try to register a MagicNum already existed %v", cmd.MagicNum)
+            if cmd == SSMP_DISP_CLOSE {
+                return nil
+            } else if cmd == SSMP_DISP_RESET {
+                disp.mapInput = make(map[uint64] chan bytes.Reader)
+            }
+            
+        case reg := <-disp.regChan:
+            if reg.BufChan != nil {
+                if _, ok := disp.mapInput[reg.Magic]; ok {
+                    fmt.Printf("Try to register a MagicNum already existed %v", reg.Magic)
                     continue
                 }
-                disp.mapInput[cmd.MagicNum] = cmd.FsmChan
-            } else if cmd.Cmd == SSMP_DISP_UNREG {
-                if _, ok := disp.mapInput[cmd.MagicNum]; ok {
-                    fmt.Printf("Try to unregister a MagicNum not existed %v", cmd.MagicNum)
+                disp.mapInput[reg.Magic] = reg.BufChan
+            } else {
+                if _, ok := disp.mapInput[reg.Magic]; ok {
+                    fmt.Printf("Try to unregister a MagicNum not existed %v", reg.Magic)
                     continue
                 }
-                delete(disp.mapInput, cmd.MagicNum)
+                delete(disp.mapInput, reg.Magic)
             }
         }
     }

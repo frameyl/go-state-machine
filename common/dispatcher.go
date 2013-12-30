@@ -11,10 +11,16 @@ type DispatcherQ struct {
 }
 
 type Dispatch   interface {
-    Handle(chan bytes.Reader) (err error)
+    // Main loop of the dispatch
+    Handle(nextStep chan bytes.Reader) error
+    // Return name of the dispatch
     Name() (string)
-    GetBufChan() (chan bytes.Reader)
-    GetCntlChan() (chan int)
+    // Get the buffer Channel of the Dispatch
+    GetBufChan() chan bytes.Reader
+    // Close the dispatch
+    Close() error
+    // Reset the dispatch
+    Reset() error
 }
 
 func (dq *DispatcherQ)Add(dispatch Dispatch) (err error) {
@@ -50,7 +56,7 @@ func (dq *DispatcherQ)Start() (err error) {
 func (dq *DispatcherQ)Stop() (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
-        dispatch.GetCntlChan() <- SSMP_DISP_CLOSE
+        dispatch.Close()
     }
     return nil
 }
