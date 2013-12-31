@@ -1,6 +1,6 @@
 package common
 
-//import "fmt"
+import "fmt"
 import "encoding/binary"
 import "bytes"
 
@@ -15,6 +15,19 @@ const OFF_MSG_NAME = LEN_PROTO_NAME
 const OFF_MAGIC_NUMBER = OFF_MSG_NAME + LEN_MSG_NAME
 const OFF_SERVER_ID = OFF_MAGIC_NUMBER + LEN_MAGIC_NUMBER
 const OFF_SESSION_ID = OFF_SERVER_ID + LEN_SERVER_ID
+
+const PROTO_NAME = "SSMPv1"
+
+func ReadFieldString(pkt *bytes.Reader, offset int, length int) (string, error) {
+    field := make([]byte, length)
+    n, _ := pkt.ReadAt(field, int64(offset))
+    if n != length {
+        return "", fmt.Errorf("Packet is too short during reading field len %n, %v,", length, n)
+    }
+
+    index := bytes.IndexByte(field, 0)
+    return string(field[:index]), nil
+}
 
 type Packet_header struct {
     Proto_name      []byte

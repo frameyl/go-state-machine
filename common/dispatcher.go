@@ -10,6 +10,14 @@ type DispatchMng struct {
     dList       list.List
 }
 
+// Dispatch counters
+type DispatchCnt struct {
+    Rx          uint
+    Handled     uint
+    Bypass      uint
+    Discard     uint
+}
+
 type Dispatch   interface {
     // Main loop of the dispatch
     Handle(nextStep chan bytes.Reader) error
@@ -21,6 +29,8 @@ type Dispatch   interface {
     Close() error
     // Reset the dispatch
     Reset() error
+    // Get Counters
+    GetCnt() DispatchCnt
 }
 
 func (dq *DispatchMng)Add(dispatch Dispatch) (err error) {

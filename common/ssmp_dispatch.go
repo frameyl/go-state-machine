@@ -17,6 +17,8 @@ type SsmpDispatch struct {
     regChan chan SsmpDispatchReg
     // Map from Magic Number to FSM input channel
     mapInput map[uint64] chan bytes.Reader
+    // Counters
+    DispatchCnt
 }
 
 type SsmpDispatchReg struct {
@@ -29,12 +31,13 @@ const SSMP_DISP_RESET       = 1
 
 func NewSsmpDispatch(dispName string) *SsmpDispatch {
     disp := &SsmpDispatch{
-                dispName, 
+                dispName,
                 make(chan bytes.Reader),
                 make(chan int),
                 make(chan SsmpDispatchReg),
-                make(map[uint64] chan bytes.Reader) }
-    
+                make(map[uint64] chan bytes.Reader),
+                DispatchCnt{} }
+
     return disp
 }
 
@@ -47,8 +50,8 @@ func (disp SsmpDispatch)GetBufChan() chan bytes.Reader {
 }
 
 func (disp SsmpDispatch)Close() error {
-    disp.cntlChan <- SSMP_DISP_CLOSE 
-    return nil   
+    disp.cntlChan <- SSMP_DISP_CLOSE
+    return nil
 }
 
 func (disp SsmpDispatch)Reset() error {
@@ -66,21 +69,30 @@ func (disp SsmpDispatch)Unregister(magic uint64) error {
     return nil
 }
 
+func (disp SsmpDispatch)GetCnt() DispatchCnt {
+    return disp.DispatchCnt
+}
+
 func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
     for {
         select {
         case packet := <-disp.bufChan:
+            disp.Rx++
+            // Packet length is less than the SSMP header
             if packet.Len() < LEN_SSMP_HDR {
-                return fmt.Errorf("SSMP Dispatch get a invalide packet, len = %v", packet.Len())
+                // Not a valid SSMP packet, bypass it
+                nextStep <- packet
+                disp.Bypass++
             }
 
-            magicBytes := make([]byte, 8)
+            // Proto Name is not correct
+            
+
+
+            magicBytes := make([]byte, LEN_MAGIC_NUMBER)
             n, _ := packet.ReadAt(magicBytes, OFF_MAGIC_NUMBER)
             if n != LEN_MAGIC_NUMBER {
                 fmt.Printf("Found error during read magic number, len %v", n)
-                if nextStep != nil {
-                    nextStep <- packet
-                }
                 continue
             }
             magic := binary.BigEndian.Uint64(magicBytes)
@@ -103,7 +115,7 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
             } else if cmd == SSMP_DISP_RESET {
                 disp.mapInput = make(map[uint64] chan bytes.Reader)
             }
-            
+
         case reg := <-disp.regChan:
             if reg.BufChan != nil {
                 if _, ok := disp.mapInput[reg.Magic]; ok {
@@ -120,7 +132,7 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
             }
         }
     }
-    
+
     return nil
 }
 
