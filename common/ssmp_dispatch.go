@@ -27,8 +27,13 @@ type SsmpDispatchReg struct {
 const SSMP_DISP_CLOSE       = 0
 const SSMP_DISP_RESET       = 1
 
-func NewSsmpDispatch(n string) *SsmpDispatch {
-    disp := &SsmpDispatch{name: n}
+func NewSsmpDispatch(dispName string) *SsmpDispatch {
+    disp := &SsmpDispatch{
+                dispName, 
+                make(chan bytes.Reader),
+                make(chan int),
+                make(chan SsmpDispatchReg),
+                make(map[uint64] chan bytes.Reader) }
     
     return disp
 }
@@ -91,6 +96,9 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
         case cmd := <-disp.cntlChan:
             // Command 0 means terminate the routine
             if cmd == SSMP_DISP_CLOSE {
+                close(disp.bufChan)
+                close(disp.cntlChan)
+                close(disp.regChan)
                 return nil
             } else if cmd == SSMP_DISP_RESET {
                 disp.mapInput = make(map[uint64] chan bytes.Reader)

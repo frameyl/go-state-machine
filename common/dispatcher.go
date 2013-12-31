@@ -6,7 +6,7 @@ import (
     "fmt"
 )
 
-type DispatcherQ struct {
+type DispatchMng struct {
     dList       list.List
 }
 
@@ -23,12 +23,12 @@ type Dispatch   interface {
     Reset() error
 }
 
-func (dq *DispatcherQ)Add(dispatch Dispatch) (err error) {
+func (dq *DispatchMng)Add(dispatch Dispatch) (err error) {
     dq.dList.PushBack(dispatch)
     return nil
 }
 
-func (dq *DispatcherQ)Remove(name string) (err error) {
+func (dq *DispatchMng)Remove(name string) (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
         if dispatch.Name() == name {
@@ -40,7 +40,7 @@ func (dq *DispatcherQ)Remove(name string) (err error) {
     return fmt.Errorf("Not found %s in Dispatcher Queue", name)
 }
 
-func (dq *DispatcherQ)Start() (err error) {
+func (dq *DispatchMng)Start() (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
         var nextStep chan bytes.Reader = nil
@@ -53,7 +53,7 @@ func (dq *DispatcherQ)Start() (err error) {
     return nil
 }
 
-func (dq *DispatcherQ)Stop() (err error) {
+func (dq *DispatchMng)Stop() (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
         dispatch.Close()
@@ -61,7 +61,7 @@ func (dq *DispatcherQ)Stop() (err error) {
     return nil
 }
 
-func (dq *DispatcherQ)Handle(buf bytes.Reader) (err error) {
+func (dq *DispatchMng)Handle(buf bytes.Reader) (err error) {
     e := dq.dList.Front()
     dispatch, _ := e.Value.(Dispatch)
     dispatch.GetBufChan() <- buf
