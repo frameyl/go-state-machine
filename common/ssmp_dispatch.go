@@ -3,7 +3,6 @@ package common
 import (
     "bytes"
     "fmt"
-    "encoding/binary"
 )
 
 type SsmpDispatch struct {
@@ -85,23 +84,26 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
                 disp.Bypass++
             }
 
-            // Proto Name is not correct
-            
-
-
-            magicBytes := make([]byte, LEN_MAGIC_NUMBER)
-            n, _ := packet.ReadAt(magicBytes, OFF_MAGIC_NUMBER)
-            if n != LEN_MAGIC_NUMBER {
-                fmt.Printf("Found error during read magic number, len %v", n)
-                continue
+            // Not a SSMP packet
+            if isSsmpPkt, _ := IsSsmpPacket(&packet); !isSsmpPkt {
+                nextStep <- packet
+                disp.Bypass++
             }
-            magic := binary.BigEndian.Uint64(magicBytes)
+
+            // With a unknow message name
+            if msgType, _ := ReadMsgType(&packet); msgType == MSG_UNKNOWN {
+                disp.Discard++
+            }
+
+            magic, _ := ReadMagicNum(&packet)
 
             fsmChan, ok := disp.mapInput[magic]
             if ok {
                 fsmChan <- packet
+                disp.Handled++
             } else {
-                // A new incoming session for server
+                // Discard if I'm a client
+                // Handle it as an incoming session if I'm a server
                 // FIXME
             }
 
@@ -124,7 +126,7 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
                 }
                 disp.mapInput[reg.Magic] = reg.BufChan
             } else {
-                if _, ok := disp.mapInput[reg.Magic]; ok {
+                if _, ok := disp.mapInput[reg.Magic]; !ok {
                     fmt.Printf("Try to unregister a MagicNum not existed %v", reg.Magic)
                     continue
                 }
