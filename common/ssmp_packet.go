@@ -35,6 +35,25 @@ const (
 
 type MsgType int
 
+func GetMsgNameByType(mtype MsgType) string {
+    switch mtype {
+    case MSG_UNKNOWN:
+        return "Unknown"
+    case MSG_HELLO:
+        return MSG_NAME_HELLO
+    case MSG_REQUEST:
+        return MSG_NAME_REQUEST
+    case MSG_REPLY:
+        return MSG_NAME_REPLY
+    case MSG_CONFIRM:
+        return MSG_NAME_CONFIRM
+    case MSG_CLOSE:
+        return MSG_NAME_CLOSE
+    default:
+        return "ERROR"
+    }
+}
+
 func ReadFieldString(pkt *bytes.Reader, offset int, length int) (string, error) {
     field := make([]byte, length)
     n, _ := pkt.ReadAt(field, int64(offset))
