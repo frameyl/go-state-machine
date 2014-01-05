@@ -2,7 +2,8 @@ package common
 
 import (
     "bytes"
-    "fmt"
+    //"fmt"
+    "log"
 )
 
 type SsmpDispatch struct {
@@ -134,22 +135,24 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
                 return nil
             } else if cmd == SSMP_DISP_RESET {
                 disp.mapFsm = make(map[uint64] chan bytes.Reader)
+                log.Printf("Reset Dispatch %s", disp.name)
             }
 
         case reg := <-disp.regChan:
             if reg.BufChan != nil {
                 if _, ok := disp.mapFsm[reg.Magic]; ok {
-                    fmt.Printf("Try to register a MagicNum already existed %v\n", reg.Magic)
+                    log.Printf("Try to register a MagicNum already existed %v\n", reg.Magic)
                     continue
                 }
                 disp.mapFsm[reg.Magic] = reg.BufChan
-                fmt.Printf("Register a MagicNum %X\n", reg.Magic)
+                log.Printf("Register a MagicNum %X\n", reg.Magic)
             } else {
                 if _, ok := disp.mapFsm[reg.Magic]; !ok {
-                    fmt.Printf("Try to unregister a MagicNum not existed %v\n", reg.Magic)
+                    log.Printf("Try to unregister a MagicNum not existed %v\n", reg.Magic)
                     continue
                 }
                 delete(disp.mapFsm, reg.Magic)
+                log.Printf("Unregister a MagicNum %X\n", reg.Magic)
             }
         }
     }
