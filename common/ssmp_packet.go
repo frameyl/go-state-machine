@@ -66,6 +66,10 @@ func ReadFieldString(pkt *bytes.Reader, offset int, length int) (string, error) 
 }
 
 func IsSsmpPacket(pkt *bytes.Reader) (bool, error) {
+    if pkt.Len() < LEN_SSMP_HDR {
+        return false, nil
+    }
+
     ProtoName, err := ReadFieldString(pkt, 0, LEN_PROTO_NAME)
     if err != nil {
         return false, err

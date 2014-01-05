@@ -1,9 +1,10 @@
 package common
 
-import "testing"
-import "time"
-import "fmt"
-import "bytes"
+import (
+    "testing"
+    "time"
+    "bytes"
+)
 
 /*
 var ssmp1 []byte=[]byte{'S', 'S', 'M', 'P', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -36,7 +37,9 @@ var sample2 []byte=[]byte{'S', 'S', 'M', 'P', 'V', '1', 0, 0, 0, 0, 0, 0, 0, 0, 
 var samplePkt2 *bytes.Reader = bytes.NewReader(sample2)
 */
 
-func TestSsmpDispatch(t *testing.T) {
+var ticker *time.Ticker = time.NewTicker(10 * time.Millisecond)
+
+func TestSsmpDispatchClnt(t *testing.T) {
     var dispMng DispatchMng
     ssmpDisp := NewSsmpDispatch("Ssmp Connector", SSMP_DISP_CLNT)
 
@@ -45,56 +48,81 @@ func TestSsmpDispatch(t *testing.T) {
 
     dispMng.Handle(*samplePkt1)
     
-    timer1 := time.NewTicker(time.Second)
-    for i := 0; i < 10; i++ {
-        select {
-        case <- timer1.C:
-            fmt.Printf("Bypass %v", ssmpDisp.Bypass)
-            if ssmpDisp.Bypass == 1 {
-                goto EOW1
-            }
-        }
-    }
-EOW1:    
-    if ssmpDisp.Bypass < 1 {
-        t.Errorf("SSMP Dispatch failed to bypass a non-SSMP packet, RX %v, Bypass %v", ssmpDisp.Rx, ssmpDisp.Bypass)
-    }
+    WaitforCondition(
+        func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{1, 0, 1, 0}},
+        func() {
+            t.Errorf("SSMP Dispatch failed to bypass a non-SSMP packet, %s", ssmpDisp.DispatchCnt)
+        },
+        10,
+    )
     
     dispMng.Handle(*ssmpPkt1)
 
-    for i := 0; i < 10; i++ {
-        select {
-        case <- timer1.C:
-            fmt.Printf("Discard %v", ssmpDisp.Discard)
-            if ssmpDisp.Discard == 1 {
-                goto EOW2
-            }
-        }
-    }
-EOW2:
-    if ssmpDisp.Discard < 1 {
-        t.Errorf("SSMP Dispatch failed to bypass a non-SSMP packet, RX %v, Bypass %v", ssmpDisp.Rx, ssmpDisp.Bypass)
-    }
+    WaitforCondition(
+        func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{2, 0, 1, 1}},
+        func() {
+            t.Errorf("SSMP Dispatch failed to discard a unknown SSMP packet, %s", ssmpDisp.DispatchCnt)
+        },
+        10,
+    )
     
     chanInput := make(chan bytes.Reader)
     ssmpDisp.Register(0x11223344aabbccdd, chanInput)
     
     dispMng.Handle(*ssmpPkt1)
-    var buf bytes.Reader
 
-    for i := 0; i < 10; i++ {
+    WaitforBufChannel(
+        chanInput, 
+        func(buf bytes.Reader) {
+            if buf.Len() != 64 {
+                t.Errorf("SSMP Dispatch distributed a error packet, len %v", buf.Len())
+            }
+        },
+        func() {
+            t.Errorf("SSMP Dispatch: didn't get the packet")
+        }, 
+        10,
+    )
+
+    ssmpDisp.Unregister(0x11223344aabbccdd)
+    
+    dispMng.Handle(*ssmpPkt1)
+
+    WaitforCondition(
+        func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{4, 1, 1, 2}},
+        func() {
+            t.Errorf("SSMP Dispatch failed to discard a SSMP packet, %s", ssmpDisp.DispatchCnt)
+        },
+        10,
+    )
+    
+}
+
+func WaitforCondition(cond func() bool, timeoutHnl func(), timeout int) {
+    for i := 0; i < timeout; i++ {
         select {
-        case <- timer1.C:
-            fmt.Printf("Handeld %v", ssmpDisp.Handled)
-        case buf = <- chanInput:
-            goto EOW3
+        case <- ticker.C:
+            if cond() {
+                return
+            }
         }
     }
-EOW3:
-    fmt.Printf("Packet Length %v", buf.Len())
-    if buf.Len() == 0 {
-        t.Errorf("SSMP Dispatch: didn't get the packet")
+    
+    timeoutHnl()
+}
+
+func WaitforBufChannel(bufchan chan bytes.Reader, action func(buf bytes.Reader), timeoutHnl func(), timeout int) {
+    for i := 0; i < timeout; {
+        select {
+        case <- ticker.C:
+            i++
+        case buf := <- bufchan:
+            action(buf)
+            return
+        }
     }
+
+    timeoutHnl()
 }
 
 

@@ -79,3 +79,7 @@ func (dq *DispatchMng)Handle(buf bytes.Reader) (err error) {
     return nil
 }
 
+func (cnt DispatchCnt)String() string {
+    return fmt.Sprintf("RX %v, Handled %v, Bypass %v, Discard %v", cnt.Rx, cnt.Handled, cnt.Bypass, cnt.Discard)
+}
+

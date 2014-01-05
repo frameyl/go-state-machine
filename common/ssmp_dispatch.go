@@ -88,18 +88,6 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
         select {
         case packet := <-disp.bufChan:
             disp.Rx++
-            // Packet length is less than the SSMP header
-            //fmt.Printf("debug1")
-            if packet.Len() < LEN_SSMP_HDR {
-                // Not a valid SSMP packet, bypass it
-                if nextStep != nil {
-                    nextStep <- packet
-                }
-                disp.Bypass++
-                //fmt.Printf("debug2")
-                continue
-            }
-
             // Not a SSMP packet
             //fmt.Printf("debug3")
             if isSsmpPkt, _ := IsSsmpPacket(&packet); !isSsmpPkt {
