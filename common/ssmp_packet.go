@@ -114,4 +114,66 @@ func ReadMagicNum(pkt *bytes.Reader) (magic uint64, err error) {
     return
 }
 
+func ReadServerID(pkt *bytes.Reader) (string, error) {
+    return ReadFieldString(pkt, OFF_SERVER_ID, LEN_SERVER_ID)
+}
+
+func ReadSessionID(pkt *bytes.Reader) (sid uint32, err error) {
+    sidBytes := make([]byte, LEN_SESSION_ID)
+    n, err := pkt.ReadAt(sidBytes, OFF_SESSION_ID)
+    if n != LEN_SESSION_ID {
+        return 0, fmt.Errorf("Found error during read session id, %s", err)
+    }
+
+    sid = binary.BigEndian.Uint32(sidBytes)
+    return
+}
+
+func WriteFieldString(buf *bytes.Buffer, field string, length int) error {
+    if length <= len(field) {
+        _, err := buf.WriteString(field[:length])
+        return err
+    } else {
+        buf.WriteString(field)
+        _, err := buf.Write(make([]byte, length - len(field)))
+        return err
+    }
+
+}
+
+func WriteProtoName(buf *bytes.Buffer) error {
+    return WriteFieldString(buf, PROTO_NAME, LEN_PROTO_NAME)
+}
+
+func WriteMsgName(buf *bytes.Buffer, mtype MsgType) error {
+    return WriteFieldString(buf, GetMsgNameByType(mtype), LEN_MSG_NAME)
+}
+
+func WriteMagicNum(buf *bytes.Buffer, magic uint64) error {
+    magicBytes := make([]byte, LEN_MAGIC_NUMBER)
+    binary.BigEndian.PutUint64(magicBytes, magic)
+    _, err := buf.Write(magicBytes)
+    return err
+}
+
+func WriteServerID(buf *bytes.Buffer, svrid string) error {
+    return WriteFieldString(buf, svrid, LEN_SERVER_ID)
+}
+
+func WritePacketHdr(buf *bytes.Buffer, mtype MsgType, magic uint64, svrid string) error {
+    WriteProtoName(buf)
+    WriteMsgName(buf, mtype)
+    WriteMagicNum(buf, magic)
+    WriteServerID(buf, svrid)
+    return nil
+}
+
+func WriteSessionID(buf *bytes.Buffer, sid uint32) error {
+    sidBytes := make([]byte, LEN_SESSION_ID)
+    binary.BigEndian.PutUint32(sidBytes, sid)
+    _, err := buf.Write(sidBytes)
+    return err
+}
+
+
 

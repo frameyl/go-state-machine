@@ -88,3 +88,16 @@ func TestReadMagicNum(t *testing.T) {
     }
 }
 
+func TestReadServerID(t *testing.T) {
+    if svrid, _ := ReadServerID(ssmpPkt1); svrid != "No Name" {
+        t.Errorf("Read Server ID failed, exp %s, actual %s", "No Name", svrid)
+    }
+}
+
+func TestReadSessionID(t *testing.T) {
+    if sid, _ := ReadSessionID(ssmpPkt2); sid != 0x1a2b3c4d {
+        t.Errorf("Read Session ID failed, exp %X, actual %X", 0x1a2b3c4d, sid)
+    }
+}
+
+
