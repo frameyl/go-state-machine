@@ -13,7 +13,7 @@ var ssmpPkt1 *bytes.Reader = bytes.NewReader(ssmp1)
 var ssmp2 []byte=[]byte{'S', 'S', 'M', 'P', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         'R', 'e', 'p', 'l', 'y', 0, 0, 0,
         0, 0, 0x1a, 0, 0x2b, 0, 0x3c, 0,
-        'S', 'l', 'i', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
+        'S', 'i', 'l', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0x1a, 0x2b, 0x3c, 0x4d }
 var ssmpPkt2 *bytes.Reader = bytes.NewReader(ssmp2)
@@ -21,7 +21,7 @@ var ssmpPkt2 *bytes.Reader = bytes.NewReader(ssmp2)
 var ssmpE1 []byte=[]byte{'S', 'S', 'M', 'P', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         'r', 'e', 'p', 'l', 'y', '!', 0, 0,
         'm', 'a', 'g', '3', 'M', 'A', 'G', '4',
-        'S', 'l', 'i', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
+        'S', 'i', 'l', 'e', 'n', 't', ' ', 'L', 'a', 'm', 'p', 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0x1a, 0x2b, 0x3c, 0x4d }
 var ssmpEPkt1 *bytes.Reader = bytes.NewReader(ssmpE1)
@@ -100,4 +100,25 @@ func TestReadSessionID(t *testing.T) {
     }
 }
 
+
+func TestWritePacketHdr(t *testing.T) {
+    buf := new(bytes.Buffer)
+    WritePacketHdr(buf, MSG_HELLO, 0x11223344aabbccdd, "No Name")
+    if buf.Len() != 64 {
+        t.Errorf("WritePacketHdr writes wrong packet, exp len 64, actual len %v", buf.Len())
+    } else if bytes.Compare(buf.Bytes(), ssmp1) != 0 {
+        t.Errorf("WritePacketHdr writes wrong packet")
+    }
+}
+
+func TestWriteSessionID(t *testing.T) {
+    buf := new(bytes.Buffer)
+    WritePacketHdr(buf, MSG_REPLY, 0x1a002b003c00, "Silent Lamp")
+    WriteSessionID(buf, 0x1a2b3c4d)
+    if buf.Len() != 68 {
+        t.Errorf("WriteSessionID writes wrong packet, exp len 68, actual len %v", buf.Len())
+    } else if bytes.Compare(buf.Bytes(), ssmp2) != 0 {
+        t.Errorf("WritePacketHdr writes wrong packet")
+    }
+}
 
