@@ -5,7 +5,7 @@ import (
     "io"
     "log"
     "time"
-//    "fmt"
+    "fmt"
 )
 
 type Fsm struct {
@@ -75,39 +75,90 @@ func (fsm *Fsm) RunClient() {
     close(fsm.CntlChan)
 }
 
+func (fsm *Fsm) SendPacket(mtype MsgType) error {
+    buf := new(bytes.Buffer)
+    WritePacketHdr(buf, mtype, fsm.Magic, fsm.Svrid)
+    pktLen := LEN_SSMP_HDR
+
+    if mtype == MSG_REPLY || mtype == MSG_CONFIRM || mtype == MSG_CLOSE {
+        WriteSessionID(buf, fsm.Sid)
+        pktLen += LEN_SESSION_ID
+    }
+
+    n, err := FsmWrite.Write(buf.Bytes())
+    if err != nil {
+        return fmt.Errorf("FSM#%v Write Packet failed, error: %s", err)
+    } else if n != pktLen {
+        return fmt.Errorf("FSM#%v Write Packet failed, exp len %v, actual %v", pktLen, n)
+    }
+
+    return nil
+}
+
+func (fsm *Fsm) WaitForPacket(isExpected func(*bytes.Reader) bool, action func(*bytes.Reader) stateFn) (stateFn, error) {
+    timer := time.NewTimer(FSM_TIMEOUT * time.Second)
+    defer timer.Stop()
+LSEL:
+    select {
+    case <- timer.C:
+        return nil, nil
+    case pkt := <-fsm.BufChan:
+        if isExpected(&pkt) {
+            return action(&pkt), nil
+        } else {
+            break LSEL
+        }
+    case cmd := <-fsm.CntlChan:
+        if cmd == FSM_CMD_PAUSE {
+            timer.Stop()
+            break LSEL
+        } else if cmd == FSM_CMD_RESET {
+            timer = time.NewTimer(FSM_TIMEOUT * time.Second)
+            break LSEL
+        } else if cmd == FSM_CMD_CLEAN {
+            return nil, fmt.Errorf("CLEAN")
+        }
+    }
+    return nil, fmt.Errorf("Unexpected Error")
+}
+
 func Initial(fsm *Fsm) stateFn {
     fsm.State = FSM_STATE_INIT
     // Send Hello packet periodicly, to Requesting phase once it get a hello from server with server id
-    for i:=0; i<FSM_RETRY; {
-        buf := new(bytes.Buffer)
-        WritePacketHdr(buf, MSG_HELLO, fsm.Magic, "")
-        n, err := FsmWrite.Write(buf.Bytes())
-        if err != nil || n != LEN_SSMP_HDR {
-            log.Printf("FSM#%v Write Hello failed, %s", err)
-            i++
+    for i:=0; i<FSM_RETRY; i++ {
+        if err := fsm.SendPacket(MSG_HELLO); err != nil {
+            log.Printf("%s", err)
             continue
         }
 
-        timer := time.NewTimer(FSM_TIMEOUT * time.Second)
-LSEL:
-        select {
-        case <- timer.C:
-            i++
-        case pkt := <-fsm.BufChan:
-            msgType, _ := ReadMsgType(&pkt)
-            if msgType != MSG_HELLO {
-                break LSEL
+        newState, err := fsm.WaitForPacket(
+            func(pkt *bytes.Reader) bool {
+                msgType, _ := ReadMsgType(pkt)
+                if msgType != MSG_HELLO {
+                    return false
+                }
+                magic, _ := ReadMagicNum(pkt)
+                if(magic != fsm.Magic) {
+                    return false
+                }
+                return true
+            },
+            func(pkt *bytes.Reader) stateFn {
+                fsm.Svrid, _ = ReadServerID(pkt)
+                return Requesting
+            },
+        )
+        if err != nil {
+            if err.Error() == "CLEAN" {
+                log.Printf("FSM#%v Got Clean command", fsm.Id)
+                return nil
             }
-
-            magic, _ := ReadMagicNum(&pkt)
-            if(magic != fsm.Magic) {
-                break LSEL
-            }
-
-            timer.Stop()
-            fsm.Svrid, _ = ReadServerID(&pkt)
-            return Requesting
+            log.Printf("Wait For Packet Failed %s", err)
         }
+        if newState != nil {
+            return newState
+        }
+
     }
 
     return nil
@@ -120,10 +171,10 @@ func Requesting(fsm *Fsm) stateFn {
 
 func Established(fsm *Fsm) stateFn {
     // Doing nothing until it get a disconnect command
-    return Disconnecting
+    return Closing
 }
 
-func Disconnecting(fsm *Fsm) stateFn {
+func Closing(fsm *Fsm) stateFn {
     // Send disconnect packet periodicly, to Initial state once it get a disconnect from server
     return nil
 }
