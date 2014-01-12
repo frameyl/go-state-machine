@@ -103,25 +103,25 @@ func (fsm *Fsm) SendPacket(mtype MsgType) error {
     return nil
 }
 
-func (fsm *Fsm) WaitForPacket(mtype MsgType, timer *time.Timer) (bool, *bytes.Reader, FsmCmd) {
+func (fsm *Fsm) WaitForPacket(mtype MsgType, timer *time.Timer) (*bytes.Reader, FsmCmd) {
     select {
     case <- timer.C:
-        return false, nil, FSM_CMD_TIMEOUT
+        return nil, FSM_CMD_TIMEOUT
     case pkt := <-fsm.BufChan:
         msgType, _ := ReadMsgType(&pkt)
         if msgType != mtype {
-            return false, &pkt, FSM_CMD_WAIT
+            return &pkt, FSM_CMD_WAIT
         }
-        return true, &pkt, FSM_CMD_NOTHING
+        return &pkt, FSM_CMD_NOTHING
     case cmd := <-fsm.CntlChan:
         if cmd == FSM_CMD_PAUSE {
             timer.Stop()
         } else if cmd == FSM_CMD_RESET {
             timer = time.NewTimer(FSM_TIMEOUT * time.Second)
         }
-        return false, nil, FsmCmd(cmd)
+        return nil, FsmCmd(cmd)
     }
-    return false, nil, FSM_CMD_NOTHING
+    return nil, FSM_CMD_NOTHING
 }
 
 /*
@@ -167,8 +167,8 @@ func Initial(fsm *Fsm) stateFn {
         defer timer.Stop()
 
         for {
-            got, pkt, cmd := fsm.WaitForPacket(MSG_HELLO, timer)
-            if got {
+            pkt, cmd := fsm.WaitForPacket(MSG_HELLO, timer)
+            if pkt != nil && cmd == FSM_CMD_NOTHING {
                 magic, _ := ReadMagicNum(pkt)
                 if(magic != fsm.Magic) {
                     continue
