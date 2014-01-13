@@ -2,10 +2,10 @@ package common
 
 import (
     "bytes"
-    "io"
+    //"io"
     "log"
     "time"
-    "fmt"
+    //"fmt"
 )
 
 type Fsm struct {
@@ -18,6 +18,18 @@ type Fsm struct {
     BufChan  chan bytes.Reader
     //Control channel (start, reset, clean), with scheduler goroutine
     CntlChan chan int
+    //Counters
+    FsmCnt
+}
+
+type FsmClient struct {
+    Fsm
+    FsmClientCnt
+}
+
+type FsmServer struct {
+    Fsm
+    FsmServerCnt
 }
 
 type FsmCnt struct {
@@ -31,14 +43,12 @@ type FsmCnt struct {
 }
 
 type FsmClientCnt struct {
-    FsmCnt
     TxRequest   int
     TxConfirm   int
     RxReply     int
 }
 
 type FsmServerCnt struct {
-    FsmCnt
     TxReply     int
     RxRequest   int
     RxConfirm   int
@@ -70,7 +80,7 @@ const (
 const FSM_RETRY     = 5
 const FSM_TIMEOUT   = 3
 
-var FsmWrite io.Writer
+var FsmWrite chan bytes.Buffer
 
 type stateFn func(*Fsm) stateFn
 
@@ -93,12 +103,15 @@ func (fsm *Fsm) SendPacket(mtype MsgType) error {
         pktLen += LEN_SESSION_ID
     }
 
+    FsmWrite <- *buf
+    /*
     n, err := FsmWrite.Write(buf.Bytes())
     if err != nil {
         return fmt.Errorf("FSM#%v Write Packet failed, error: %s", err)
     } else if n != pktLen {
         return fmt.Errorf("FSM#%v Write Packet failed, exp len %v, actual %v", pktLen, n)
     }
+    */
 
     return nil
 }
@@ -108,6 +121,7 @@ func (fsm *Fsm) WaitForPacket(mtype MsgType, timer *time.Timer) (*bytes.Reader, 
     case <- timer.C:
         return nil, FSM_CMD_TIMEOUT
     case pkt := <-fsm.BufChan:
+        fsm.Rx++
         msgType, _ := ReadMsgType(&pkt)
         if msgType != mtype {
             return &pkt, FSM_CMD_WAIT
@@ -124,35 +138,6 @@ func (fsm *Fsm) WaitForPacket(mtype MsgType, timer *time.Timer) (*bytes.Reader, 
     return nil, FSM_CMD_NOTHING
 }
 
-/*
-func (fsm *Fsm) WaitForPacket(isExpected func(*bytes.Reader) bool, action func(*bytes.Reader) stateFn) (stateFn, error) {
-    timer := time.NewTimer(FSM_TIMEOUT * time.Second)
-    defer timer.Stop()
-LSEL:
-    select {
-    case <- timer.C:
-        return nil, nil
-    case pkt := <-fsm.BufChan:
-        if isExpected(&pkt) {
-            return action(&pkt), nil
-        } else {
-            break LSEL
-        }
-    case cmd := <-fsm.CntlChan:
-        if cmd == FSM_CMD_PAUSE {
-            timer.Stop()
-            break LSEL
-        } else if cmd == FSM_CMD_RESET {
-            timer = time.NewTimer(FSM_TIMEOUT * time.Second)
-            break LSEL
-        } else if cmd == FSM_CMD_CLEAN {
-            return nil, fmt.Errorf("CLEAN")
-        }
-    }
-    return nil, fmt.Errorf("Unexpected Error")
-}
-*/
-
 func Initial(fsm *Fsm) stateFn {
     fsm.State = FSM_STATE_INIT
     // Send Hello packet periodicly, to Requesting phase once it get a hello from server with server id
@@ -163,12 +148,15 @@ func Initial(fsm *Fsm) stateFn {
             continue
         }
 
+        fsm.Tx++
+        fsm.TxHello++
         timer := time.NewTimer(FSM_TIMEOUT * time.Second)
         defer timer.Stop()
 
         for {
             pkt, cmd := fsm.WaitForPacket(MSG_HELLO, timer)
             if pkt != nil && cmd == FSM_CMD_NOTHING {
+                fsm.RxHello++
                 magic, _ := ReadMagicNum(pkt)
                 if(magic != fsm.Magic) {
                     continue
@@ -186,6 +174,8 @@ func Initial(fsm *Fsm) stateFn {
                 break
             }
         }
+
+        fsm.Retry++
     }
 
     log.Printf("FSM#%v Initial Failed", fsm.Id)
