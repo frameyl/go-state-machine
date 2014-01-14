@@ -104,14 +104,6 @@ func (fsm *Fsm) SendPacket(mtype MsgType) error {
     }
 
     FsmWrite <- *buf
-    /*
-    n, err := FsmWrite.Write(buf.Bytes())
-    if err != nil {
-        return fmt.Errorf("FSM#%v Write Packet failed, error: %s", err)
-    } else if n != pktLen {
-        return fmt.Errorf("FSM#%v Write Packet failed, exp len %v, actual %v", pktLen, n)
-    }
-    */
 
     return nil
 }
