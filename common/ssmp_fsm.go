@@ -14,12 +14,14 @@ type Fsm struct {
     Magic   uint64  //Magic Number of FSM
     Svrid   string  //Server ID
     Sid     uint32  //Session ID of FSM
-    //packet recv channel, with packet goroutine
+    // packet recv channel, with packet goroutine
     BufChan  chan bytes.Reader
-    //Control channel (start, reset, clean), with scheduler goroutine
+    // Control channel (start, reset, clean), with scheduler goroutine
     CntlChan chan int
-    //Counters
+    // Counters
     FsmCnt
+    // Next State, Only for Unit Test
+    NextState   int
 }
 
 type FsmClient struct {
@@ -74,7 +76,7 @@ const (
     FSM_STATE_INIT
     FSM_STATE_REQ
     FSM_STATE_EST
-    FSM_STATE_DISC
+    FSM_STATE_CLOSE
 )
 
 const FSM_RETRY     = 5
@@ -154,12 +156,14 @@ func Initial(fsm *Fsm) stateFn {
                     continue
                 }
                 fsm.Svrid, _ = ReadServerID(pkt)
+                fsm.NextState = FSM_STATE_REQ
                 return Requesting
             }
             if cmd == FSM_CMD_WAIT {
                 continue
             } else if cmd == FSM_CMD_CLEAN {
                 log.Printf("FSM#%v Got Clean command", fsm.Id)
+                fsm.NextState = FSM_STATE_IDLE
                 return nil
             } else {
                 i++
@@ -171,21 +175,25 @@ func Initial(fsm *Fsm) stateFn {
     }
 
     log.Printf("FSM#%v Initial Failed", fsm.Id)
+    fsm.NextState = FSM_STATE_IDLE
     return nil
 }
 
 func Requesting(fsm *Fsm) stateFn {
     // Send Request packet periodicly, to Established phase once it get a reply from server
+    fsm.State = FSM_STATE_REQ
     return Established
 }
 
 func Established(fsm *Fsm) stateFn {
     // Doing nothing until it get a disconnect command
+    fsm.State = FSM_STATE_EST
     return Closing
 }
 
 func Closing(fsm *Fsm) stateFn {
     // Send disconnect packet periodicly, to Initial state once it get a disconnect from server
+    fsm.State = FSM_STATE_CLOSE
     return nil
 }
 
