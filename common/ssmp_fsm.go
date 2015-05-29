@@ -11,7 +11,6 @@ import (
 
 type Session struct {
 	Id    int    //unique identifer of the FSM
-	State int    //state of the FSM
 	Magic uint64 //Magic Number of FSM
 	Svrid string //Server ID
 	Sid   uint32 //Session ID of FSM
@@ -20,11 +19,16 @@ type Session struct {
 	// Control channel (start, reset, clean), with scheduler goroutine
 	CntlChan chan int
 	// Counters
-	FsmCnt
-	// Next State, Only for Unit Test
-	NextState int
-	// FSM (loopdev style)
+	SessionCnt
+	// FSM (looplab style)
 	fsm *fsm.FSM
+}
+
+type SessionClient struct {
+	Session
+	retryTimer *time.Timer
+	deadTimer *time.Timer
+	SessionClientCnt
 }
 
 func NewClientSession(id int) *Session {
@@ -36,19 +40,55 @@ func NewClientSession(id int) *Session {
 		"idle",
 		fsm.Events{
 			{Name: "start", Src: []string{"idle"}, Dst: "init"},
-			{Name: "stop", Src: []string{"init", "req", "est"}, Dst: "close"},
+			
+			{Name: "stop", Src: []string{"init"}, Dst: "close"},
+			{Name: "stop", Src: []string{"req", "est"}, Dst: "close"},
+			
 			{Name: "hello_received", Src: []string{"init"}, Dst: "req"},
+			
 			{Name: "reply_received", Src: []string{"req"}, Dst: "est"},
-			{Name: "disconnect_received", Src: []string{"est"}, Dst: "close"},
+						
+			{Name: "disconnect_received", Src: []string{"init"}, Dst: "idle"},
+			{Name: "disconnect_received", Src: []string{"req"}, Dst: "idle"},
+			{Name: "disconnect_received", Src: []string{"est"}, Dst: "idle"},
 
-			{Name: "pause", Src: []string{"idle"}, Dst: "init"},
-			{Name: "clean", Src: []string{"idle"}, Dst: "init"},
-			{Name: "reset", Src: []string{"idle"}, Dst: "init"},
+			{Name: "pause", Src: []string{"init"}, Dst: "init"},
+			{Name: "pause", Src: []string{"req"}, Dst: "req"},
+			{Name: "pause", Src: []string{"est"}, Dst: "est"},
+			{Name: "pause", Src: []string{"close"}, Dst: "close"},
+			{Name: "continue", Src: []string{"init"}, Dst: "init"},
+			{Name: "continue", Src: []string{"req"}, Dst: "req"},
+			{Name: "continue", Src: []string{"est"}, Dst: "est"},
+			{Name: "continue", Src: []string{"close"}, Dst: "close"},
+			
+			{Name: "clean", Src: []string{"idle", "init", "req", "est", "close"}, Dst: "idle"},
+			
+			{Name: "retry_timeout", Src: []string{"init"}, Dst: "init"},
+			{Name: "retry_timeout", Src: []string{"req"}, Dst: "req"},
+			{Name: "retry_timeout", Src: []string{"est"}, Dst: "est"},
+			{Name: "retry_timeout", Src: []string{"close"}, Dst: "close},
 
-			{Name: "dead_timeout", Src: []string{"idle"}, Dst: "init"},
+			{Name: "dead_timeout", Src: []string{"init", "req", "est", "close"}, Dst: "idle"},			
 		},
 		fsm.Callbacks{
-			"enter_state": func(e *fsm.Event) { d.enterState(e) },
+			"enter_state": func(e *fsm.Event) { s.enterState(e) },
+			"enter_idle": func(e *fsm.Event) { s.disconnected(e) },
+			"enter_init": func(e *fsm.Event) { s.sendHello(); s.retryTimerOn(); s.deadTimerOn() },
+			"enter_req": func(e *fsm.Event) { s.sendRequest(); s.retryTimerOn(); s.deadTimerOn() },
+			"enter_est": func(e *fsm.Event) { s.established(e) },
+			"enter_close": func(e *fsm.Event) { s.sendClose(); s.retryTimerOn(); s.deadTimerOn() },
+
+			"leave_init": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
+			"leave_req": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
+			"leave_close": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
+			
+			"after_pause": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
+			"after_continue": func(e *fsm.Event) { s.retryTimerOn(); s.deadTimerOn() },
+			
+			"after_clean": func(e *fsm.Event) { s.clean(e) },
+			
+			"after_retry_timeout": func(e *fsm.Event) { s.retryTimeout(e) },
+			"after_dead_timeout": func(e *fsm.Event) { s.deadTimeout(e) },
 		},
 	)
 	return s
@@ -75,17 +115,13 @@ func NewServerSession(id int) *Session {
 	return s
 }
 
-type FsmClient struct {
-	Fsm
-	FsmClientCnt
+
+type SessionServer struct {
+	Session
+	SessionServerCnt
 }
 
-type FsmServer struct {
-	Fsm
-	FsmServerCnt
-}
-
-type FsmCnt struct {
+type SessionCnt struct {
 	Tx      int
 	TxHello int
 	TxDisc  int
@@ -95,19 +131,19 @@ type FsmCnt struct {
 	Retry   int
 }
 
-type FsmClientCnt struct {
+type SessionClientCnt struct {
 	TxRequest int
 	TxConfirm int
 	RxReply   int
 }
 
-type FsmServerCnt struct {
+type SessionServerCnt struct {
 	TxReply   int
 	RxRequest int
 	RxConfirm int
 }
 
-type FsmCmd int
+type SessionCmd int
 
 const (
 	// Command for FSM
