@@ -94,7 +94,7 @@ func (s *Session) sendPacket(mtype MsgType) error {
 	pktLen := LEN_SSMP_HDR
 
 	if mtype == MSG_REPLY || mtype == MSG_CONFIRM || mtype == MSG_CLOSE {
-		WriteSessionID(buf, fsm.Sid)
+		WriteSessionID(buf, s.Sid)
 		pktLen += LEN_SESSION_ID
 	}
 
@@ -103,23 +103,23 @@ func (s *Session) sendPacket(mtype MsgType) error {
 	return nil
 }
 
-func (s *Session) sendHello(mtype MsgType) error {
+func (s *Session) sendHello() error {
 	return s.sendPacket(MSG_HELLO)
 }
 
-func (s *Session) sendRequest(mtype MsgType) error {
+func (s *Session) sendRequest() error {
 	return s.sendPacket(MSG_REQUEST)
 }
 
-func (s *Session) sendConfirm(mtype MsgType) error {
+func (s *Session) sendConfirm() error {
 	return s.sendPacket(MSG_CONFIRM)
 }
 
-func (s *Session) sendClose(mtype MsgType) error {
+func (s *Session) sendClose() error {
 	return s.sendPacket(MSG_CLOSE)
 }
 
-func (s *Session) sendReply(mtype MsgType) error {
+func (s *Session) sendReply() error {
 	return s.sendPacket(MSG_REPLY)
 }
 
@@ -137,46 +137,58 @@ func (cs *SessionClient) retryTimerOn() error {
 }
 
 func (cs *SessionClient) retryTimerOff() error {
-	return cs.retryTimer.Stop()
+	if cs.retryTimer.Stop() == false {
+		return fmt.Errorf("Failed to stop retry timer, id %d", cs.Id)
+	}
+	
+	return nil
 }
 
 func (cs *SessionClient) deadTimerOn() error {
 	cs.deadTimer = time.NewTimer(SESSION_TIMEOUT_DEAD * time.Second)
+	return nil
 }
 
 func (cs *SessionClient) deadTimerOff() error {
-	return cs.deadTimer.Stop()
+	if cs.deadTimer.Stop() == false {
+		return fmt.Errorf("Failed to stop dead timer, id %d", cs.Id)
+	}
+	return nil
 }
 
 func (ss *SessionServer) deadTimerOn() error {
 	ss.deadTimer = time.NewTimer(SESSION_TIMEOUT_DEAD * time.Second)
+	return nil
 }
 
 func (ss *SessionServer) deadTimerOff() error {
-	return ss.deadTimer.Stop()
+	if ss.deadTimer.Stop() == false {
+		return fmt.Errorf("Failed to stop dead timer, id %d", ss.Id)
+	}
+	return nil
 }
 
 // enterState is a callback and will be called once a state transaction happens
 func (s *Session) enterState(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "Entering state", s.fsm.Current(), "with Event", e.Event)
+	log.Println("Session", s.Id, "Entering state", s.fsm.Current(), "with Event", e.Event)
 }
 
 // connected is a callback and will be called once the session connects
 func (s *Session) connected(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "Connected", "with Event", e.Event)
+	log.Println("Session", s.Id, "Connected", "with Event", e.Event)
 	return
 }
 
 func (s *Session) disconnected(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "Disconnected", "with Event", e.Event)
+	log.Println("Session", s.Id, "Disconnected", "with Event", e.Event)
 	return
 }
 
 func (s *Session) clean(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "cleaned", "with Event", e.Event)
+	log.Println("Session", s.Id, "cleaned", "with Event", e.Event)
 	
 	// Clean SrvID, Magic
-	s.Svrid = 0
+	s.Svrid = ""
 	s.Sid = 0
 	s.Magic = 0
 	
@@ -185,9 +197,9 @@ func (s *Session) clean(e *fsm.Event) {
 
 // retryTimeout is a callback and will be called after a retry timer expired
 func (s *SessionClient) retryTimeout(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "retry Timer expired")
+	log.Println("Session", s.Id, "retry Timer expired")
 	
-	current = s.fsm.Current()
+	current := s.fsm.Current()
 	switch current {
 	case "init":
 		s.sendHello()
@@ -199,7 +211,7 @@ func (s *SessionClient) retryTimeout(e *fsm.Event) {
 		s.sendClose()
 		
 	default:
-		fmt.Println("Invalide state when retry timer expired.")
+		log.Println("Invalide state when retry timer expired.")
 		return
 	}
 	
@@ -210,18 +222,18 @@ func (s *SessionClient) retryTimeout(e *fsm.Event) {
 }
 
 func (s *SessionClient) deadTimeout(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "dead Timer expired")
+	log.Println("Session", s.Id, "dead Timer expired")
 	
-	current = s.fsm.Current()
+	current := s.fsm.Current()
 	switch current {
 	case "init", "req", "close":
 		// Clean SrvID, Magic
-		s.Svrid = 0
+		s.Svrid = ""
 		s.Sid = 0
 		s.Magic = 0
 		
 	default:
-		fmt.Println("Invalide state when dead timer expired.")
+		log.Println("Invalide state when dead timer expired.")
 		return
 	}	
 	
@@ -229,16 +241,16 @@ func (s *SessionClient) deadTimeout(e *fsm.Event) {
 }
 
 func (s *SessionServer) deadTimeout(e *fsm.Event) {
-	fmt.Println("Session", s.Id, "cleaned", "with Event", e.Event)
+	log.Println("Session", s.Id, "cleaned", "with Event", e.Event)
 
-	current = s.fsm.Current()
+	current := s.fsm.Current()
 	switch current {
 	case "allocated":
 		// Clean Magic
 		s.Magic = 0
 		
 	default:
-		fmt.Println("Invalide state when dead timer expired.")
+		log.Println("Invalide state when dead timer expired.")
 		return
 	}	
 	
@@ -247,7 +259,9 @@ func (s *SessionServer) deadTimeout(e *fsm.Event) {
 
 func NewClientSession(id int) *SessionClient {
 	s := &SessionClient{
-		Id: id,
+		Session: Session {
+			Id: id,
+		},
 	}
 
 	s.fsm = fsm.NewFSM(
@@ -280,7 +294,7 @@ func NewClientSession(id int) *SessionClient {
 			{Name: "retry_timeout", Src: []string{"init"}, Dst: "init"},
 			{Name: "retry_timeout", Src: []string{"req"}, Dst: "req"},
 			{Name: "retry_timeout", Src: []string{"est"}, Dst: "est"},
-			{Name: "retry_timeout", Src: []string{"close"}, Dst: "close},
+			{Name: "retry_timeout", Src: []string{"close"}, Dst: "close"},
 
 			{Name: "dead_timeout", Src: []string{"init", "req", "est", "close"}, Dst: "idle"},
 		},
@@ -296,8 +310,8 @@ func NewClientSession(id int) *SessionClient {
 			"leave_req": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
 			"leave_close": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
 			
-			"before_hello_received": func(e *fsm.Event, pkt *bytes.Reader) { s.recvHello(e, pkt) },
-			"before_reply_received": func(e *fsm.Event, pkt *bytes.Reader) { s.recvReply(e, pkt) },			
+			"before_hello_received": func(e *fsm.Event) { s.recvHello(e) },
+			"before_reply_received": func(e *fsm.Event) { s.recvReply(e) },
 			
 			"after_pause": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
 			"after_continue": func(e *fsm.Event) { s.retryTimerOn(); s.deadTimerOn() },
@@ -318,7 +332,7 @@ func (s *SessionClient) RunClient() {
 			s.fsm.Event("retry_timeout")
 		case <-s.deadTimer.C:
 			s.fsm.Event("dead_timeout")
-		case cmd := <-fsm.CntlChan:
+		case cmd := <-s.CntlChan:
 			if cmd == S_CMD_START {
 				s.fsm.Event("start")
 			} else if cmd == S_CMD_STOP {
@@ -330,48 +344,54 @@ func (s *SessionClient) RunClient() {
 			} else if cmd == S_CMD_CLEAN {
 				s.fsm.Event("clean")
 			} else {
-				fmt.Println("Invalide command received", cmd)
+				log.Println("Invalide command received", cmd)
 			}
-		case pkt := <-fsm.BufChan:
+		case pkt := <-s.BufChan:
 			// got a packet here
 			s.Rx++
 			msgType, _ := ReadMsgType(&pkt)
 			if msgType == MSG_HELLO {
 				s.fsm.Event("hello_received", &pkt)
-			} else msgType == MSG_REPLY {
+			} else if msgType == MSG_REPLY {
 				s.fsm.Event("reply_received", &pkt)
 			} else {
-				fmt.Println("Invalid package received, type", msgType)
+				log.Println("Invalid package received, type", msgType)
 			}
 		}
 	}
 }
 
-func (s *SessionClient) recvHello(e *fsm.Event, pkt *bytes.Reader) {
+func (s *SessionClient) recvHello(e *fsm.Event) {
+	var pkt *bytes.Reader
+	pkt = e.Args[0].(*bytes.Reader)
+	
 	s.RxHello++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		fmt.Println("Wrong Magic number", s.Magic)
+		log.Println("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
 	
-	fsm.Svrid, _ = ReadServerID(pkt)
+	s.Svrid, _ = ReadServerID(pkt)
 	return
 }
 
-func (s *SessionClient) recvReply(e *fsm.Event, pkt *bytes.Reader) {
+func (s *SessionClient) recvReply(e *fsm.Event) {
+	var pkt *bytes.Reader
+	pkt = e.Args[0].(*bytes.Reader)
+	
 	s.RxReply++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		fmt.Println("Wrong Magic number", s.Magic)
+		log.Println("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
 	
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
-		fmt.Println("Wrong Server ID", s.Svrid)
+		log.Println("Wrong Server ID", s.Svrid)
 		e.Cancel()
 		return
 	}
@@ -382,7 +402,9 @@ func (s *SessionClient) recvReply(e *fsm.Event, pkt *bytes.Reader) {
 
 func NewServerSession(id int) *SessionServer {
 	s := &SessionServer{
-		Id: id,
+		Session: Session{
+			Id: id,
+		},
 	}
 
 	s.fsm = fsm.NewFSM(
@@ -392,7 +414,7 @@ func NewServerSession(id int) *SessionServer {
 			{Name: "stop", Src: []string{"listening", "allocated", "est"}, Dst: "idle"},
 			{Name: "request_received", Src: []string{"listening"}, Dst: "allocated"},
 			{Name: "confirm_received", Src: []string{"allocated"}, Dst: "est"},
-			{Name: "disconnect_received", Src: []string{"est"}, Dst: "listening"},
+			{Name: "close_received", Src: []string{"est"}, Dst: "listening"},
 			
 			{Name: "pause", Src: []string{"allocated"}, Dst: "allocated"},
 			{Name: "continue", Src: []string{"allocated"}, Dst: "allocated"},
@@ -404,13 +426,19 @@ func NewServerSession(id int) *SessionServer {
 		fsm.Callbacks{
 			"enter_state": func(e *fsm.Event) { s.enterState(e) },
 			"enter_idle": func(e *fsm.Event) { s.disconnected(e) },
-			"enter_listening": func(e *fsm.Event) { s.registerSession(e) },
-			"enter_allocated": func(e *fsm.Event) { s.sendReply(e), s.deadTimerOn() },
+			"enter_listening": func(e *fsm.Event) { /*s.registerSession(e)*/ },
+			"enter_allocated": func(e *fsm.Event) { s.sendReply(); s.deadTimerOn() },
 			"enter_est": func(e *fsm.Event) { s.connected(e) },
 
 			"leave_allocated": func(e *fsm.Event) { s.deadTimerOff() },
+
+			"before_request_received": func(e *fsm.Event) { s.recvRequest(e) },
+			"before_confirm_received": func(e *fsm.Event) { s.recvConfirm(e) },
+			"before_close_received": func(e *fsm.Event) { s.recvClose(e) },
 			
-			"after_stop": func(e *fsm.Event) { s.stop() },
+			"after_close_received": func(e *fsm.Event) { s.sendClose() },
+			
+			"after_stop": func(e *fsm.Event) { },
 			"after_pause": func(e *fsm.Event) { s.deadTimerOff() },
 			"after_continue": func(e *fsm.Event) { s.deadTimerOn() },
 			
@@ -422,7 +450,123 @@ func NewServerSession(id int) *SessionServer {
 	return s
 }
 
+func (s *SessionServer) RunServer() {
+	for {
+		select {
+		case <-s.deadTimer.C:
+			s.fsm.Event("dead_timeout")
+		case cmd := <-s.CntlChan:
+			if cmd == S_CMD_START {
+				s.fsm.Event("start")
+			} else if cmd == S_CMD_STOP {
+				s.fsm.Event("stop")
+			} else if cmd == S_CMD_PAUSE {
+				s.fsm.Event("pause")
+			} else if cmd == S_CMD_CONTINUE {
+				s.fsm.Event("continue")
+			} else if cmd == S_CMD_CLEAN {
+				s.fsm.Event("clean")
+			} else {
+				log.Println("Invalide command received", cmd)
+			}
+		case pkt := <-s.BufChan:
+			// got a packet here
+			s.Rx++
+			msgType, _ := ReadMsgType(&pkt)
+			if msgType == MSG_REQUEST {
+				s.fsm.Event("request_received", &pkt)
+			} else if msgType == MSG_CONFIRM {
+				s.fsm.Event("confirm_received", &pkt)
+			} else if msgType == MSG_CLOSE {
+				s.fsm.Event("disconnect_received", &pkt)
+			} else {
+				log.Println("Invalid package received, type", msgType)
+			}
+		}
+	}
+}
 
+func (s *SessionServer) recvRequest(e *fsm.Event) {
+	var pkt *bytes.Reader
+	pkt = e.Args[0].(*bytes.Reader)
+	
+	s.RxRequest++
+	magic, _ := ReadMagicNum(pkt)
+	if magic != s.Magic {
+		log.Println("Wrong Magic number", s.Magic)
+		e.Cancel()
+		return
+	}
+	
+	svrid, _ := ReadServerID(pkt)
+	if svrid != s.Svrid {
+		log.Println("Wrong Server ID", s.Svrid)
+		e.Cancel()
+		return
+	}
+	
+	return
+}
+
+func (s *SessionServer) recvConfirm(e *fsm.Event) {
+	var pkt *bytes.Reader
+	pkt = e.Args[0].(*bytes.Reader)
+	
+	s.RxConfirm++
+	magic, _ := ReadMagicNum(pkt)
+	if magic != s.Magic {
+		log.Println("Wrong Magic number", s.Magic)
+		e.Cancel()
+		return
+	}
+	
+	svrid, _ := ReadServerID(pkt)
+	if svrid != s.Svrid {
+		log.Println("Wrong Server ID", s.Svrid)
+		e.Cancel()
+		return
+	}
+	
+	sid, _ := ReadSessionID(pkt)
+	if sid != s.Sid {
+		log.Println("Wrong Session ID", s.Sid)
+		e.Cancel()
+		return
+	}
+
+	return
+}
+
+func (s *SessionServer) recvClose(e *fsm.Event) {
+	var pkt *bytes.Reader
+	pkt = e.Args[0].(*bytes.Reader)
+	
+	s.RxConfirm++
+	magic, _ := ReadMagicNum(pkt)
+	if magic != s.Magic {
+		log.Println("Wrong Magic number", s.Magic)
+		e.Cancel()
+		return
+	}
+	
+	svrid, _ := ReadServerID(pkt)
+	if svrid != s.Svrid {
+		log.Println("Wrong Server ID", s.Svrid)
+		e.Cancel()
+		return
+	}
+	
+	sid, _ := ReadSessionID(pkt)
+	if sid != s.Sid {
+		log.Println("Wrong Session ID", s.Sid)
+		e.Cancel()
+		return
+	}
+
+	return
+}
+
+/*
 const (
 	FSM_STATE_IDLE = iota
 	FSM_STATE_INIT
@@ -547,3 +691,4 @@ func Closing(fsm *Fsm) stateFn {
 	fsm.State = FSM_STATE_CLOSE
 	return nil
 }
+*/

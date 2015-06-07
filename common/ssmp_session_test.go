@@ -1,11 +1,12 @@
 package common
 
 import (
-    "testing"
-    "bytes"
+    //"testing"
+    //"bytes"
     //"fmt"
 )
 
+/*
 func TestFsmInit(t *testing.T) {
     fsmClient := FsmClient{
             Fsm{15, FSM_STATE_IDLE,
@@ -87,5 +88,5 @@ func TestFsmInitRetry(t *testing.T) {
         400,
     )
 }
-
+*/
 
