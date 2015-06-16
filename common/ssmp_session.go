@@ -261,6 +261,8 @@ func NewClientSession(id int) *SessionClient {
 	s := &SessionClient{
 		Session: Session {
 			Id: id,
+			BufChan: make(chan bytes.Reader, 2),
+			CntlChan: make(chan int),
 		},
 	}
 
@@ -400,10 +402,15 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 	return
 }
 
-func NewServerSession(id int) *SessionServer {
+func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionServer {
 	s := &SessionServer{
 		Session: Session{
 			Id: id,
+			Sid: sid,
+			Svrid: svrid,
+			Magic: magic,
+			BufChan: make(chan bytes.Reader, 2),
+			CntlChan: make(chan int),
 		},
 	}
 

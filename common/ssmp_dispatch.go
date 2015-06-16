@@ -79,8 +79,8 @@ func (disp SsmpDispatch)Unregister(magic uint64) error {
     return nil
 }
 
-func (disp SsmpDispatch)RegisterListener(bufChan chan bytes.Reader) {
-	disp.listener = bufChan
+func (disp SsmpDispatch)RegisterListener(listenerChan chan bytes.Reader) {
+	disp.listener = listenerChan
 }
 
 func (disp SsmpDispatch)GetCnt() DispatchCnt {

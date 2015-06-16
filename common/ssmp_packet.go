@@ -24,6 +24,8 @@ const MSG_NAME_REPLY = "Reply"
 const MSG_NAME_CONFIRM = "Confirm"
 const MSG_NAME_CLOSE = "Close"
 
+const MAGIC_NIL = 0
+
 const (
     MSG_UNKNOWN   = iota
     MSG_HELLO
@@ -38,7 +40,7 @@ type MsgType int
 func GetMsgNameByType(mtype MsgType) string {
     switch mtype {
     case MSG_UNKNOWN:
-        return "Unknown"
+        return "Unknown 0"
     case MSG_HELLO:
         return MSG_NAME_HELLO
     case MSG_REQUEST:
@@ -50,7 +52,7 @@ func GetMsgNameByType(mtype MsgType) string {
     case MSG_CLOSE:
         return MSG_NAME_CLOSE
     default:
-        return "ERROR"
+        return fmt.Sprint("Unknow ", mtype)
     }
 }
 

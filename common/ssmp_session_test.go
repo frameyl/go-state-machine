@@ -1,10 +1,20 @@
 package common
 
 import (
-    //"testing"
-    //"bytes"
+    "testing"
+    "bytes"
     //"fmt"
 )
+
+func TestSession(t *testing.T) {
+	sclient := NewClientSession(1)
+	
+	OutputChan = make(chan bytes.Buffer)
+	
+	go sclient.RunClient()
+	
+	//sclient.CntlChan <- S_CMD_START
+}
 
 /*
 func TestFsmInit(t *testing.T) {
