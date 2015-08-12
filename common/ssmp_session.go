@@ -4,8 +4,8 @@ import (
 	"bytes"
 	//"io"
 	"log"
-	"time"
-	"fmt"
+    "time"
+	//"fmt"
 	"github.com/looplab/fsm"
 )
 
@@ -31,14 +31,14 @@ type Session struct {
 
 type SessionClient struct {
 	Session
-	retryTimer *time.Timer
-	deadTimer *time.Timer
+	retryTimer  *PTimer
+	deadTimer   *PTimer
 	SessionClientCnt
 }
 
 type SessionServer struct {
 	Session
-	deadTimer *time.Timer
+	deadTimer   *PTimer
 	SessionServerCnt
 }
 
@@ -123,8 +123,8 @@ func (s *Session) sendReply() error {
 	return s.sendPacket(MSG_REPLY)
 }
 
-const SESSION_TIMEOUT_RETRY = 2
-const SESSION_TIMEOUT_DEAD = 5
+const SESSION_TIMEOUT_RETRY = 2 * time.Second
+const SESSION_TIMEOUT_DEAD = 5 * time.Second
 
 // Timer functions:
 //		retryTimerOn
@@ -132,39 +132,32 @@ const SESSION_TIMEOUT_DEAD = 5
 //		deadTimerOn
 //		deadTimerOff
 func (cs *SessionClient) retryTimerOn() error {
-	cs.retryTimer = time.NewTimer(SESSION_TIMEOUT_RETRY * time.Second)
+	cs.retryTimer.TimerOn()
 	return nil
 }
 
 func (cs *SessionClient) retryTimerOff() error {
-	if cs.retryTimer.Stop() == false {
-		return fmt.Errorf("Failed to stop retry timer, id %d", cs.Id)
-	}
-	
+	cs.retryTimer.TimerOff()	
 	return nil
 }
 
 func (cs *SessionClient) deadTimerOn() error {
-	cs.deadTimer = time.NewTimer(SESSION_TIMEOUT_DEAD * time.Second)
+	cs.deadTimer.TimerOn()
 	return nil
 }
 
 func (cs *SessionClient) deadTimerOff() error {
-	if cs.deadTimer.Stop() == false {
-		return fmt.Errorf("Failed to stop dead timer, id %d", cs.Id)
-	}
+	cs.deadTimer.TimerOff()
 	return nil
 }
 
 func (ss *SessionServer) deadTimerOn() error {
-	ss.deadTimer = time.NewTimer(SESSION_TIMEOUT_DEAD * time.Second)
+	ss.deadTimer.TimerOn()
 	return nil
 }
 
 func (ss *SessionServer) deadTimerOff() error {
-	if ss.deadTimer.Stop() == false {
-		return fmt.Errorf("Failed to stop dead timer, id %d", ss.Id)
-	}
+	ss.deadTimer.TimerOff()
 	return nil
 }
 
@@ -264,6 +257,8 @@ func NewClientSession(id int) *SessionClient {
 			BufChan: make(chan bytes.Reader, 2),
 			CntlChan: make(chan int),
 		},
+        retryTimer: NewPTimer(SESSION_TIMEOUT_RETRY),
+        deadTimer: NewPTimer(SESSION_TIMEOUT_DEAD),
 	}
 
 	s.fsm = fsm.NewFSM(
@@ -330,9 +325,9 @@ func NewClientSession(id int) *SessionClient {
 func (s *SessionClient) RunClient() {
 	for {
 		select {
-		case <-s.retryTimer.C:
+		case <-s.retryTimer.C():
 			s.fsm.Event("retry_timeout")
-		case <-s.deadTimer.C:
+		case <-s.deadTimer.C():
 			s.fsm.Event("dead_timeout")
 		case cmd := <-s.CntlChan:
 			if cmd == S_CMD_START {
@@ -412,6 +407,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 			BufChan: make(chan bytes.Reader, 2),
 			CntlChan: make(chan int),
 		},
+        deadTimer: NewPTimer(SESSION_TIMEOUT_DEAD),
 	}
 
 	s.fsm = fsm.NewFSM(
@@ -460,7 +456,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 func (s *SessionServer) RunServer() {
 	for {
 		select {
-		case <-s.deadTimer.C:
+		case <-s.deadTimer.C():
 			s.fsm.Event("dead_timeout")
 		case cmd := <-s.CntlChan:
 			if cmd == S_CMD_START {
@@ -572,130 +568,3 @@ func (s *SessionServer) recvClose(e *fsm.Event) {
 
 	return
 }
-
-/*
-const (
-	FSM_STATE_IDLE = iota
-	FSM_STATE_INIT
-	FSM_STATE_REQ
-	FSM_STATE_EST
-	FSM_STATE_CLOSE
-)
-
-const FSM_RETRY = 5
-const FSM_TIMEOUT = 3
-
-
-type stateFn func(*Fsm) stateFn
-
-func (fsm *Fsm) RunClient() {
-	for state := Initial; state != nil; {
-		state = state(fsm)
-	}
-
-	close(fsm.BufChan)
-	close(fsm.CntlChan)
-}
-
-func (fsm *Fsm) SendPacket(mtype MsgType) error {
-	buf := new(bytes.Buffer)
-	WritePacketHdr(buf, mtype, fsm.Magic, fsm.Svrid)
-	pktLen := LEN_SSMP_HDR
-
-	if mtype == MSG_REPLY || mtype == MSG_CONFIRM || mtype == MSG_CLOSE {
-		WriteSessionID(buf, fsm.Sid)
-		pktLen += LEN_SESSION_ID
-	}
-
-	FsmWrite <- *buf
-
-	return nil
-}
-
-func (fsm *Fsm) WaitForPacket(mtype MsgType, timer *time.Timer) (*bytes.Reader, FsmCmd) {
-	select {
-	case <-timer.C:
-		return nil, FSM_CMD_TIMEOUT
-	case pkt := <-fsm.BufChan:
-		fsm.Rx++
-		msgType, _ := ReadMsgType(&pkt)
-		if msgType != mtype {
-			return &pkt, FSM_CMD_WAIT
-		}
-		return &pkt, FSM_CMD_NOTHING
-	case cmd := <-fsm.CntlChan:
-		if cmd == FSM_CMD_PAUSE {
-			timer.Stop()
-		} else if cmd == FSM_CMD_RESET {
-			timer = time.NewTimer(FSM_TIMEOUT * time.Second)
-		}
-		return nil, FsmCmd(cmd)
-	}
-	return nil, FSM_CMD_NOTHING
-}
-
-func Initial(fsm *Fsm) stateFn {
-	fsm.State = FSM_STATE_INIT
-	// Send Hello packet periodicly, to Requesting phase once it get a hello from server with server id
-	for i := 0; i < FSM_RETRY; {
-		if err := fsm.SendPacket(MSG_HELLO); err != nil {
-			i++
-			log.Printf("%s", err)
-			continue
-		}
-
-		fsm.Tx++
-		fsm.TxHello++
-		timer := time.NewTimer(FSM_TIMEOUT * time.Second)
-		defer timer.Stop()
-
-		for {
-			pkt, cmd := fsm.WaitForPacket(MSG_HELLO, timer)
-			if pkt != nil && cmd == FSM_CMD_NOTHING {
-				fsm.RxHello++
-				magic, _ := ReadMagicNum(pkt)
-				if magic != fsm.Magic {
-					continue
-				}
-				fsm.Svrid, _ = ReadServerID(pkt)
-				fsm.NextState = FSM_STATE_REQ
-				return Requesting
-			}
-			if cmd == FSM_CMD_WAIT {
-				continue
-			} else if cmd == FSM_CMD_CLEAN {
-				log.Printf("FSM#%v Got Clean command", fsm.Id)
-				fsm.NextState = FSM_STATE_IDLE
-				return nil
-			} else {
-				i++
-				break
-			}
-		}
-
-		fsm.Retry++
-	}
-
-	log.Printf("FSM#%v Initial Failed", fsm.Id)
-	fsm.NextState = FSM_STATE_IDLE
-	return nil
-}
-
-func Requesting(fsm *Fsm) stateFn {
-	// Send Request packet periodicly, to Established phase once it get a reply from server
-	fsm.State = FSM_STATE_REQ
-	return Established
-}
-
-func Established(fsm *Fsm) stateFn {
-	// Doing nothing until it get a disconnect command
-	fsm.State = FSM_STATE_EST
-	return Closing
-}
-
-func Closing(fsm *Fsm) stateFn {
-	// Send disconnect packet periodicly, to Initial state once it get a disconnect from server
-	fsm.State = FSM_STATE_CLOSE
-	return nil
-}
-*/
