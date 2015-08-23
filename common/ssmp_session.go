@@ -2,7 +2,7 @@ package common
 
 import (
 	"bytes"
-	//"io"
+	"math/rand"
 	"log"
     "time"
 	//"fmt"
@@ -188,6 +188,10 @@ func (s *Session) clean(e *fsm.Event) {
 	return
 }
 
+func (s *Session) Current() string {
+    return s.fsm.Current()
+}
+
 // retryTimeout is a callback and will be called after a retry timer expired
 func (s *SessionClient) retryTimeout(e *fsm.Event) {
 	log.Println("Session", s.Id, "retry Timer expired")
@@ -307,6 +311,7 @@ func NewClientSession(id int) *SessionClient {
 			"leave_req": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
 			"leave_close": func(e *fsm.Event) { s.retryTimerOff(); s.deadTimerOff() },
 			
+            "before_start": func(e *fsm.Event) { s.genMagicNumber(e) },
 			"before_hello_received": func(e *fsm.Event) { s.recvHello(e) },
 			"before_reply_received": func(e *fsm.Event) { s.recvReply(e) },
 			
@@ -399,6 +404,10 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 	return
 }
 
+func (s *SessionClient) genMagicNumber(e *fsm.Event) {
+    s.Magic = uint64(rand.Int63())
+}
+
 func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionServer {
 	s := &SessionServer{
 		Session: Session{
@@ -417,6 +426,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 		fsm.Events{
 			{Name: "start", Src: []string{"idle"}, Dst: "listening"},
 			{Name: "stop", Src: []string{"listening", "allocated", "est"}, Dst: "idle"},
+            {Name: "hello_received", Src: []string{"listening"}, Dst: "listening"},
 			{Name: "request_received", Src: []string{"listening"}, Dst: "allocated"},
 			{Name: "confirm_received", Src: []string{"allocated"}, Dst: "est"},
 			{Name: "close_received", Src: []string{"est"}, Dst: "listening"},
@@ -437,6 +447,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 
 			"leave_allocated": func(e *fsm.Event) { s.deadTimerOff() },
 
+            "before_hello_received": func(e *fsm.Event) { s.recvHello(e); s.sendHello() },
 			"before_request_received": func(e *fsm.Event) { s.recvRequest(e) },
 			"before_confirm_received": func(e *fsm.Event) { s.recvConfirm(e) },
 			"before_close_received": func(e *fsm.Event) { s.recvClose(e) },
@@ -480,7 +491,9 @@ func (s *SessionServer) RunServer() {
             
             pkt := bytes.NewReader(pktBytes)
 			msgType, _ := ReadMsgType(pkt)
-			if msgType == MSG_REQUEST {
+			if msgType == MSG_HELLO {
+                s.fsm.Event("hello_received", pkt)
+            } else if msgType == MSG_REQUEST {
 				s.fsm.Event("request_received", pkt)
 			} else if msgType == MSG_CONFIRM {
 				s.fsm.Event("confirm_received", pkt)
@@ -491,6 +504,21 @@ func (s *SessionServer) RunServer() {
 			}
 		}
 	}
+}
+
+func (s *SessionServer) recvHello(e *fsm.Event) {
+    var pkt *bytes.Reader
+    pkt = e.Args[0].(*bytes.Reader)
+    
+    s.RxHello++
+	magic, _ := ReadMagicNum(pkt)
+	if magic != s.Magic {
+		log.Println("Wrong Magic number", s.Magic)
+		e.Cancel()
+		return
+	}
+    
+    return
 }
 
 func (s *SessionServer) recvRequest(e *fsm.Event) {
