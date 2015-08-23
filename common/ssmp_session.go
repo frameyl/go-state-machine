@@ -10,7 +10,7 @@ import (
 )
 
 // OutputChan is the channel for sending packets out
-var OutputChan chan bytes.Buffer
+var OutputChan chan []byte
 
 // Session defines a session for SSMP
 type Session struct {
@@ -20,7 +20,7 @@ type Session struct {
 	Sid   uint32 //Session ID allocated by Server
 	
 	// packet recv channel, with packet goroutine
-	BufChan chan bytes.Reader
+	BufChan chan []byte
 	// Control channel (start, reset, clean), with scheduler goroutine
 	CntlChan chan int
 	// Counters
@@ -98,7 +98,7 @@ func (s *Session) sendPacket(mtype MsgType) error {
 		pktLen += LEN_SESSION_ID
 	}
 
-	OutputChan <- *buf
+	OutputChan <- buf.Bytes()
 
 	return nil
 }
@@ -254,7 +254,7 @@ func NewClientSession(id int) *SessionClient {
 	s := &SessionClient{
 		Session: Session {
 			Id: id,
-			BufChan: make(chan bytes.Reader, 2),
+			BufChan: make(chan []byte, 2),
 			CntlChan: make(chan int),
 		},
         retryTimer: NewPTimer(SESSION_TIMEOUT_RETRY),
@@ -343,14 +343,16 @@ func (s *SessionClient) RunClient() {
 			} else {
 				log.Println("Invalide command received", cmd)
 			}
-		case pkt := <-s.BufChan:
+		case pktBytes := <-s.BufChan:
 			// got a packet here
+            pkt := bytes.NewReader(pktBytes)
+            
 			s.Rx++
-			msgType, _ := ReadMsgType(&pkt)
+			msgType, _ := ReadMsgType(pkt)
 			if msgType == MSG_HELLO {
-				s.fsm.Event("hello_received", &pkt)
+				s.fsm.Event("hello_received", pkt)
 			} else if msgType == MSG_REPLY {
-				s.fsm.Event("reply_received", &pkt)
+				s.fsm.Event("reply_received", pkt)
 			} else {
 				log.Println("Invalid package received, type", msgType)
 			}
@@ -404,7 +406,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 			Sid: sid,
 			Svrid: svrid,
 			Magic: magic,
-			BufChan: make(chan bytes.Reader, 2),
+			BufChan: make(chan []byte, 2),
 			CntlChan: make(chan int),
 		},
         deadTimer: NewPTimer(SESSION_TIMEOUT_DEAD),
@@ -472,16 +474,18 @@ func (s *SessionServer) RunServer() {
 			} else {
 				log.Println("Invalide command received", cmd)
 			}
-		case pkt := <-s.BufChan:
+		case pktBytes := <-s.BufChan:
 			// got a packet here
 			s.Rx++
-			msgType, _ := ReadMsgType(&pkt)
+            
+            pkt := bytes.NewReader(pktBytes)
+			msgType, _ := ReadMsgType(pkt)
 			if msgType == MSG_REQUEST {
-				s.fsm.Event("request_received", &pkt)
+				s.fsm.Event("request_received", pkt)
 			} else if msgType == MSG_CONFIRM {
-				s.fsm.Event("confirm_received", &pkt)
+				s.fsm.Event("confirm_received", pkt)
 			} else if msgType == MSG_CLOSE {
-				s.fsm.Event("disconnect_received", &pkt)
+				s.fsm.Event("disconnect_received", pkt)
 			} else {
 				log.Println("Invalid package received, type", msgType)
 			}

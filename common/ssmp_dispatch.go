@@ -12,22 +12,22 @@ type SsmpDispatch struct {
     // Mode of Dispatch
     mode int
     // Channel of packet buffer
-    bufChan chan bytes.Reader
+    bufChan chan []byte
     // Channel of control message
     cntlChan chan int
     // Channel of register
     regChan chan SsmpDispatchReg
     // Map from Magic Number to FSM input channel
-    mapFsm map[uint64] chan bytes.Reader
+    mapFsm map[uint64] chan []byte
     // Default input channel for unmapped packets
-    listener chan bytes.Reader
+    listener chan []byte
     // Counters
     DispatchCnt
 }
 
 type SsmpDispatchReg struct {
     Magic uint64
-    BufChan chan bytes.Reader
+    BufChan chan []byte
 }
 
 const SSMP_DISP_CLOSE       = 0
@@ -42,10 +42,10 @@ func NewSsmpDispatch(dispName string, mode int) *SsmpDispatch {
 		disp := &SsmpDispatch {
 					name: dispName,
 					mode: mode,
-					bufChan: make(chan bytes.Reader),
+					bufChan: make(chan []byte),
 					cntlChan: make(chan int),
 					regChan: make(chan SsmpDispatchReg),
-					mapFsm: make(map[uint64] chan bytes.Reader),
+					mapFsm: make(map[uint64] chan []byte),
 					DispatchCnt: DispatchCnt{} }
 
     return disp
@@ -55,7 +55,7 @@ func (disp SsmpDispatch)Name() string {
     return disp.name
 }
 
-func (disp SsmpDispatch)GetBufChan() chan bytes.Reader {
+func (disp SsmpDispatch)GetBufChan() chan []byte {
     return disp.bufChan
 }
 
@@ -69,7 +69,7 @@ func (disp SsmpDispatch)Reset() error {
     return nil
 }
 
-func (disp SsmpDispatch)Register(magic uint64, bufChan chan bytes.Reader) error {
+func (disp SsmpDispatch)Register(magic uint64, bufChan chan []byte) error {
     disp.regChan <- SsmpDispatchReg{magic, bufChan}
     return nil
 }
@@ -79,7 +79,7 @@ func (disp SsmpDispatch)Unregister(magic uint64) error {
     return nil
 }
 
-func (disp SsmpDispatch)RegisterListener(listenerChan chan bytes.Reader) {
+func (disp SsmpDispatch)RegisterListener(listenerChan chan []byte) {
 	disp.listener = listenerChan
 }
 
@@ -87,14 +87,14 @@ func (disp SsmpDispatch)GetCnt() DispatchCnt {
     return disp.DispatchCnt
 }
 
-func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
+func (disp *SsmpDispatch)Handle(nextStep chan []byte) (err error) {
     for {
         select {
         case packet := <-disp.bufChan:
             disp.Rx++
             // Not a SSMP packet
-            //fmt.Printf("debug3")
-            if isSsmpPkt, _ := IsSsmpPacket(&packet); !isSsmpPkt {
+            pkt := bytes.NewReader(packet)
+            if isSsmpPkt, _ := IsSsmpPacket(pkt); !isSsmpPkt {
                 if nextStep != nil {
                     nextStep <- packet
                 }
@@ -103,13 +103,13 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
             }
 
             // With a unknow message name
-            if msgType, _ := ReadMsgType(&packet); msgType == MSG_UNKNOWN {
+            if msgType, _ := ReadMsgType(pkt); msgType == MSG_UNKNOWN {
                 disp.Discard++
                 continue
             }
 
             // Dispatch packet according to the magic number
-            magic, _ := ReadMagicNum(&packet)
+            magic, _ := ReadMagicNum(pkt)
 
             fsmChan, ok := disp.mapFsm[magic]
             if ok {
@@ -137,7 +137,7 @@ func (disp *SsmpDispatch)Handle(nextStep chan bytes.Reader) (err error) {
                 close(disp.regChan)
                 return nil
             } else if cmd == SSMP_DISP_RESET {
-                disp.mapFsm = make(map[uint64] chan bytes.Reader)
+                disp.mapFsm = make(map[uint64] chan []byte)
                 log.Printf("Reset Dispatch %s", disp.name)
             }
 

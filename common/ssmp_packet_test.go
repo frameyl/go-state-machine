@@ -1,6 +1,9 @@
 package common
 
-import "testing"
+import (
+	"testing"
+//	"fmt"
+)
 import "bytes"
 
 var ssmp1 []byte=[]byte{'S', 'S', 'M', 'P', 'v', '1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -119,6 +122,43 @@ func TestWriteSessionID(t *testing.T) {
         t.Errorf("WriteSessionID writes wrong packet, exp len 68, actual len %v", buf.Len())
     } else if bytes.Compare(buf.Bytes(), ssmp2) != 0 {
         t.Errorf("WritePacketHdr writes wrong packet")
+    }
+}
+
+var dumpPkt1 = `Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x11223344AABBCCDD
+Server:  No Name
+`
+
+var dumpPkt2 = `Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x1A002B003C00
+Server:  Silent Lamp
+Session:  439041101
+`
+
+var dumpEPkt1 = `Protocol:  SSMPv1
+Type:  Unknown
+Magic: 0x6D6167334D414734
+Server:  Silent Lamp
+Session:  439041101
+`
+
+func TestDumpSsmpPacket(t *testing.T) {
+    dump := DumpSsmpPacket(ssmpPkt1)
+    if dump != dumpPkt1 {
+        t.Errorf("Failed to dump Packet Pkt1")
+    }
+    
+    dump = DumpSsmpPacket(ssmpPkt2)
+    if dump != dumpPkt2 {
+        t.Errorf("Failed to dump Packet Pkt1")
+    }
+    
+    dump = DumpSsmpPacket(ssmpEPkt1)
+    if dump != dumpEPkt1 {
+        t.Errorf("Failed to dump Packet Pkt1")
     }
 }
 

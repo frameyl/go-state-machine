@@ -40,7 +40,7 @@ type MsgType int
 func GetMsgNameByType(mtype MsgType) string {
     switch mtype {
     case MSG_UNKNOWN:
-        return "Unknown 0"
+        return "Unknown"
     case MSG_HELLO:
         return MSG_NAME_HELLO
     case MSG_REQUEST:
@@ -131,6 +131,7 @@ func ReadSessionID(pkt *bytes.Reader) (sid uint32, err error) {
     return
 }
 
+
 func WriteFieldString(buf *bytes.Buffer, field string, length int) error {
     if length <= len(field) {
         _, err := buf.WriteString(field[:length])
@@ -177,5 +178,27 @@ func WriteSessionID(buf *bytes.Buffer, sid uint32) error {
     return err
 }
 
+
+func DumpSsmpPacket (pkt *bytes.Reader) string {
+    var str string;
+    if isSsmp, _ := IsSsmpPacket(pkt); isSsmp {
+        str = fmt.Sprintln("Protocol: ", PROTO_NAME)
+        mType, _ := ReadMsgType(pkt)
+        str += fmt.Sprintln("Type: ", GetMsgNameByType(mType))
+        magic, _ := ReadMagicNum(pkt)
+        str += fmt.Sprintf("Magic: 0x%X\n", magic)
+        svrid, _ := ReadServerID(pkt)
+        str += fmt.Sprintln("Server: ", svrid)
+        
+        if pkt.Len() >= LEN_SSMP_HDR + LEN_SESSION_ID {
+            sid, _ := ReadSessionID(pkt)
+            str += fmt.Sprintln("Session: ", sid)
+        }
+    } else {
+        str = "Unknown Packet\n"
+    }
+    
+    return str
+}
 
 

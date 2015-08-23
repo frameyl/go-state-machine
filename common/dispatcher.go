@@ -2,7 +2,7 @@ package common
 
 import (
     "container/list"
-    "bytes"
+//    "bytes"
     "fmt"
 )
 
@@ -20,11 +20,11 @@ type DispatchCnt struct {
 
 type Dispatch   interface {
     // Main loop of the dispatch
-    Handle(nextStep chan bytes.Reader) error
+    Handle(nextStep chan []byte) error
     // Return name of the dispatch
     Name() (string)
     // Get the buffer Channel of the Dispatch
-    GetBufChan() chan bytes.Reader
+    GetBufChan() chan []byte
     // Close the dispatch
     Close() error
     // Reset the dispatch
@@ -53,7 +53,7 @@ func (dq *DispatchMng)Remove(name string) (err error) {
 func (dq *DispatchMng)Start() (err error) {
     for e := dq.dList.Front(); e != nil; e = e.Next() {
         dispatch, _ := e.Value.(Dispatch)
-        var nextStep chan bytes.Reader = nil
+        var nextStep chan []byte = nil
         if e.Next() != nil {
             tempDisp, _ := e.Next().Value.(Dispatch)
             nextStep = tempDisp.GetBufChan()
@@ -71,10 +71,10 @@ func (dq *DispatchMng)Stop() (err error) {
     return nil
 }
 
-func (dq *DispatchMng)Handle(buf bytes.Reader) (err error) {
+func (dq *DispatchMng)Handle(packet []byte) (err error) {
     e := dq.dList.Front()
     dispatch, _ := e.Value.(Dispatch)
-    dispatch.GetBufChan() <- buf
+    dispatch.GetBufChan() <- packet
 
     return nil
 }

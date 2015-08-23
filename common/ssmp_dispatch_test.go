@@ -3,7 +3,7 @@ package common
 import (
     "testing"
     "time"
-    "bytes"
+    //"bytes"
     "log"
 )
 
@@ -19,7 +19,7 @@ func TestSsmpDispatchClnt(t *testing.T) {
     dispMng.Start()
 
     // Input a short packet which is not a valid SSMP packet
-    dispMng.Handle(*samplePkt1)
+    dispMng.Handle(sample1)
     
     WaitforCondition(
         func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{1, 0, 1, 0}},
@@ -30,7 +30,7 @@ func TestSsmpDispatchClnt(t *testing.T) {
     )
     
     // Input a SSMP hello packet
-    dispMng.Handle(*ssmpPkt1)
+    dispMng.Handle(ssmp1)
 
     WaitforCondition(
         func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{2, 0, 1, 1}},
@@ -41,16 +41,16 @@ func TestSsmpDispatchClnt(t *testing.T) {
     )
     
     // Register a FSM channel and input a SSMP hello packet
-    chanInput := make(chan bytes.Reader)
+    chanInput := make(chan []byte)
     ssmpDisp.Register(0x11223344aabbccdd, chanInput)
     
-    dispMng.Handle(*ssmpPkt1)
+    dispMng.Handle(ssmp1)
 
     WaitforBufChannel(
         chanInput, 
-        func(buf bytes.Reader) {
-            if buf.Len() != 64 {
-                t.Errorf("SSMP Dispatch distributed a error packet, len %v", buf.Len())
+        func(buf []byte) {
+            if len(buf) != 64 {
+                t.Errorf("SSMP Dispatch distributed a error packet, len %v", len(buf))
             }
         },
         func() {
@@ -62,7 +62,7 @@ func TestSsmpDispatchClnt(t *testing.T) {
     // Unregister a FSM channel and input a SSMP hello packet
     ssmpDisp.Unregister(0x11223344aabbccdd)
     
-    dispMng.Handle(*ssmpPkt1)
+    dispMng.Handle(ssmp1)
 
     WaitforCondition(
         func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{4, 1, 1, 2}},
@@ -74,13 +74,13 @@ func TestSsmpDispatchClnt(t *testing.T) {
     
     // Register a FSM channel and input a SSMP reply packet
     ssmpDisp.Register(0x1a002b003c00, chanInput)
-    dispMng.Handle(*ssmpPkt2)
+    dispMng.Handle(ssmp2)
     
     WaitforBufChannel(
         chanInput, 
-        func(buf bytes.Reader) {
-            if buf.Len() != 68 {
-                t.Errorf("SSMP Dispatch distributed a error packet, len %v", buf.Len())
+        func(buf []byte) {
+            if len(buf) != 68 {
+                t.Errorf("SSMP Dispatch distributed a error packet, len %v", len(buf))
             }
         },
         func() {
@@ -91,7 +91,7 @@ func TestSsmpDispatchClnt(t *testing.T) {
     
     // Reset the dispatch and input a SSMP packet
     ssmpDisp.Reset()
-    dispMng.Handle(*ssmpPkt2)
+    dispMng.Handle(ssmp2)
     
     WaitforCondition(
         func() bool {return ssmpDisp.DispatchCnt == DispatchCnt{6, 2, 1, 3}},
@@ -116,7 +116,7 @@ func WaitforCondition(cond func() bool, timeoutHnl func(), timeout int) {
     timeoutHnl()
 }
 
-func WaitforBufChannel(bufchan chan bytes.Reader, action func(buf bytes.Reader), timeoutHnl func(), timeout int) {
+func WaitforBufChannel(bufchan chan []byte, action func(buf []byte), timeoutHnl func(), timeout int) {
     for i := 0; i < timeout; {
         select {
         case <- ticker.C:
