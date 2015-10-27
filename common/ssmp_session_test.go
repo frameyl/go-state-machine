@@ -12,6 +12,8 @@ func TestSessionClient(t *testing.T) {
 	
 	OutputChan = make(chan []byte)
 	
+	MagicChan = make(chan MagicReg, 10)
+	
     // Run Client
 	go sclient.RunClient()
 	

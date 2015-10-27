@@ -12,6 +12,14 @@ import (
 // OutputChan is the channel for sending packets out
 var OutputChan chan []byte
 
+// MagicChan tell outside that the magic number of a session changed
+var MagicChan chan MagicReg
+
+type MagicReg struct{
+	Id 		int			// Session ID
+	Magic 	uint64		// Magic Number changed to (-1 means don't need anymore)
+}
+
 // Session defines a session for SSMP
 type Session struct {
 	Id    int    //unique identifer, internally used
@@ -169,6 +177,7 @@ func (s *Session) enterState(e *fsm.Event) {
 // connected is a callback and will be called once the session connects
 func (s *Session) connected(e *fsm.Event) {
 	log.Println("Session", s.Id, "Connected", "with Event", e.Event)
+	MagicChan <- MagicReg{s.Id, uint64(1<<63)}
 	return
 }
 
@@ -406,6 +415,7 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 
 func (s *SessionClient) genMagicNumber(e *fsm.Event) {
     s.Magic = uint64(rand.Int63())
+	MagicChan <- MagicReg{s.Id, s.Magic}
 }
 
 func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionServer {
@@ -576,13 +586,13 @@ func (s *SessionServer) recvClose(e *fsm.Event) {
 	var pkt *bytes.Reader
 	pkt = e.Args[0].(*bytes.Reader)
 	
-	s.RxConfirm++
-	magic, _ := ReadMagicNum(pkt)
-	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
-		e.Cancel()
-		return
-	}
+	s.RxDisc++
+	//magic, _ := ReadMagicNum(pkt)
+	//if magic != s.Magic {
+	//	log.Println("Wrong Magic number", s.Magic)
+	//	e.Cancel()
+	//	return
+	//}
 	
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
