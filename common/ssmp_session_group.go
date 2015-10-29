@@ -20,17 +20,37 @@ func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch) *Sessi
 		sg.sessions[i] = NewClientSession(startid + i)
 	}	
 	
+	go sg.Register()
+	
 	return sg
 }
 
 func (sg *SessionGroupClient) Start() {
-	
+	for _, s := range sg.sessions {
+		go s.RunClient()
+		s.CntlChan <- S_CMD_START
+	}	
 	
 	return
 }
 
 func (sg *SessionGroupClient) Stop() {
+	for _, s := range sg.sessions {
+		s.CntlChan <- S_CMD_STOP
+	}
+	
 	return
+}
+
+func (sg *SessionGroupClient) Register() {
+	for {
+		reg := <- MagicChan
+		if reg.BufChan == nil {
+			sg.dispatch.Unregister(reg.Magic)
+		} else {
+			sg.dispatch.Register(reg.Magic, reg.BufChan)
+		}
+	}
 }
 
 type SessionGroupServer struct {

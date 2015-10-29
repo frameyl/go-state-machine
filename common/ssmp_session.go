@@ -16,8 +16,8 @@ var OutputChan chan []byte
 var MagicChan chan MagicReg
 
 type MagicReg struct{
-	Id 		int			// Session ID
-	Magic 	uint64		// Magic Number changed to (-1 means don't need anymore)
+	BufChan   chan []byte   // Session
+	Magic 	  uint64		 // Magic Number
 }
 
 // Session defines a session for SSMP
@@ -151,6 +151,7 @@ func (cs *SessionClient) retryTimerOff() error {
 
 func (cs *SessionClient) deadTimerOn() error {
 	cs.deadTimer.TimerOn()
+	
 	return nil
 }
 
@@ -177,7 +178,7 @@ func (s *Session) enterState(e *fsm.Event) {
 // connected is a callback and will be called once the session connects
 func (s *Session) connected(e *fsm.Event) {
 	log.Println("Session", s.Id, "Connected", "with Event", e.Event)
-	MagicChan <- MagicReg{s.Id, uint64(1<<63)}
+	MagicChan <- MagicReg{nil, s.Magic}
 	return
 }
 
@@ -415,7 +416,7 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 
 func (s *SessionClient) genMagicNumber(e *fsm.Event) {
     s.Magic = uint64(rand.Int63())
-	MagicChan <- MagicReg{s.Id, s.Magic}
+	MagicChan <- MagicReg{s.BufChan, s.Magic}
 }
 
 func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionServer {
