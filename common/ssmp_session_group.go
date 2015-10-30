@@ -8,16 +8,19 @@ import (
 type SessionGroupClient struct {
 	sessions []*SessionClient
 	dispatch *SsmpDispatch
+	magicChan chan MagicReg
 }
 
-func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch) *SessionGroupClient {
+func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupClient {
 	sg := &SessionGroupClient{
 		sessions: make([]*SessionClient, size),
 		dispatch: dispatch,
+		magicChan: make(chan MagicReg, size/50),
 	}
 	
-	for i := range sg.sessions {
-		sg.sessions[i] = NewClientSession(startid + i)
+	for i, s := range sg.sessions {
+		sg.sessions[i] = NewClientSession(startid + i, outputChan, sg.magicChan)
+		go s.RunClient()
 	}	
 	
 	go sg.Register()
@@ -25,9 +28,9 @@ func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch) *Sessi
 	return sg
 }
 
+
 func (sg *SessionGroupClient) Start() {
 	for _, s := range sg.sessions {
-		go s.RunClient()
 		s.CntlChan <- S_CMD_START
 	}	
 	
@@ -44,7 +47,7 @@ func (sg *SessionGroupClient) Stop() {
 
 func (sg *SessionGroupClient) Register() {
 	for {
-		reg := <- MagicChan
+		reg := <- sg.magicChan
 		if reg.BufChan == nil {
 			sg.dispatch.Unregister(reg.Magic)
 		} else {

@@ -10,10 +10,10 @@ import (
 )
 
 // OutputChan is the channel for sending packets out
-var OutputChan chan []byte
+//var OutputChan chan []byte
 
 // MagicChan tell outside that the magic number of a session changed
-var MagicChan chan MagicReg
+//var MagicChan chan MagicReg
 
 type MagicReg struct{
 	BufChan   chan []byte   // Session
@@ -29,6 +29,10 @@ type Session struct {
 	
 	// packet recv channel, with packet goroutine
 	BufChan chan []byte
+	// packet output channel, shared with other sessions
+	OutputChan chan []byte
+	// Channel for magic number change, shared with other sessions
+	MagicChan chan MagicReg
 	// Control channel (start, reset, clean), with scheduler goroutine
 	CntlChan chan int
 	// Counters
@@ -82,10 +86,6 @@ const (
 	S_CMD_PAUSE
 	S_CMD_CONTINUE
 	S_CMD_CLEAN
-	// The following is internal command
-	//FSM_CMD_TIMEOUT
-	//FSM_CMD_WAIT
-	//FSM_CMD_RETRY
 )
 
 // send*() define a serial of functions to send protocol packets out
@@ -106,7 +106,7 @@ func (s *Session) sendPacket(mtype MsgType) error {
 		pktLen += LEN_SESSION_ID
 	}
 
-	OutputChan <- buf.Bytes()
+	s.OutputChan <- buf.Bytes()
 
 	return nil
 }
@@ -178,7 +178,7 @@ func (s *Session) enterState(e *fsm.Event) {
 // connected is a callback and will be called once the session connects
 func (s *Session) connected(e *fsm.Event) {
 	log.Println("Session", s.Id, "Connected", "with Event", e.Event)
-	MagicChan <- MagicReg{nil, s.Magic}
+	s.MagicChan <- MagicReg{nil, s.Magic}
 	return
 }
 
@@ -264,12 +264,14 @@ func (s *SessionServer) deadTimeout(e *fsm.Event) {
 	return
 }
 
-func NewClientSession(id int) *SessionClient {
+func NewClientSession(id int, outputChan chan []byte, magicChan chan MagicReg) *SessionClient {
 	s := &SessionClient{
 		Session: Session {
 			Id: id,
-			BufChan: make(chan []byte, 2),
-			CntlChan: make(chan int),
+			BufChan: make(chan []byte, 5),
+			CntlChan: make(chan int, 2),
+			OutputChan: outputChan,
+			MagicChan: magicChan,
 		},
         retryTimer: NewPTimer(SESSION_TIMEOUT_RETRY),
         deadTimer: NewPTimer(SESSION_TIMEOUT_DEAD),
@@ -416,10 +418,10 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 
 func (s *SessionClient) genMagicNumber(e *fsm.Event) {
     s.Magic = uint64(rand.Int63())
-	MagicChan <- MagicReg{s.BufChan, s.Magic}
+	s.MagicChan <- MagicReg{s.BufChan, s.Magic}
 }
 
-func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionServer {
+func NewServerSession(id int, sid uint32, svrid string, magic uint64, outputChan chan []byte) *SessionServer {
 	s := &SessionServer{
 		Session: Session{
 			Id: id,
@@ -428,6 +430,7 @@ func NewServerSession(id int, sid uint32, svrid string, magic uint64) *SessionSe
 			Magic: magic,
 			BufChan: make(chan []byte, 2),
 			CntlChan: make(chan int),
+			OutputChan: outputChan,
 		},
         deadTimer: NewPTimer(SESSION_TIMEOUT_DEAD),
 	}

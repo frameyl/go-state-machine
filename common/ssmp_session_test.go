@@ -8,11 +8,11 @@ import (
 )
 
 func TestSessionClient(t *testing.T) {
-	sclient := NewClientSession(1)
+	outputChan := make(chan []byte)
 	
-	OutputChan = make(chan []byte)
-	
-	MagicChan = make(chan MagicReg, 10)
+	magicChan := make(chan MagicReg, 10)
+
+	sclient := NewClientSession(1, outputChan, magicChan)
 	
     // Run Client
 	go sclient.RunClient()
@@ -21,7 +21,7 @@ func TestSessionClient(t *testing.T) {
 	sclient.CntlChan <- S_CMD_START
     
     // Wait for a hello packet
-    pktBytes := <- OutputChan
+    pktBytes := <- outputChan
     
     pkt := bytes.NewReader(pktBytes)
     log.Println("Got a packet\n", DumpSsmpPacket(pkt))
@@ -40,7 +40,7 @@ func TestSessionClient(t *testing.T) {
     sclient.BufChan <- buf.Bytes()
     
     // Wait for Request
-    pktBytes = <- OutputChan
+    pktBytes = <- outputChan
     
     log.Println("Got a packet\n", DumpSsmpPacket(bytes.NewReader(pktBytes)))
     
@@ -56,7 +56,7 @@ func TestSessionClient(t *testing.T) {
     sclient.BufChan <- buf.Bytes()
     
     // Wait for Confirm
-    pktBytes = <- OutputChan
+    pktBytes = <- outputChan
     
     log.Println("Got a packet\n", DumpSsmpPacket(bytes.NewReader(pktBytes)))
 
@@ -70,10 +70,10 @@ func TestSessionClient(t *testing.T) {
 }
 
 func TestSessionServer(t *testing.T) {
-    magic := uint64(0xABCDABCDEFEF)
-	sserver := NewServerSession(1, 999, "Test1", magic)
+	outputChan := make(chan []byte)
 	
-	OutputChan = make(chan []byte)
+    magic := uint64(0xABCDABCDEFEF)
+	sserver := NewServerSession(1, 999, "Test1", magic, outputChan)
 	
     // Run Server
 	go sserver.RunServer()
@@ -88,7 +88,7 @@ func TestSessionServer(t *testing.T) {
     sserver.BufChan <- buf.Bytes()
     
     // Wait for a hello packet
-    pktBytes := <- OutputChan
+    pktBytes := <- outputChan
     
     log.Println("Got a packet\n", DumpSsmpPacket(bytes.NewReader(pktBytes)))
     
@@ -99,7 +99,7 @@ func TestSessionServer(t *testing.T) {
     sserver.BufChan <- buf.Bytes()
     
     // Wait for a reply
-    pktBytes = <- OutputChan
+    pktBytes = <- outputChan
     
     pkt := bytes.NewReader(pktBytes)
     log.Println("Got a packet\n", DumpSsmpPacket(pkt))
