@@ -57,13 +57,18 @@ func (sg *SessionGroupClient) Register() {
 }
 
 type SessionGroupServer struct {
-	sessions []SessionServer
-	
+	sessions []*SessionServer
+	dispatch *SsmpDispatch
 }
 
-func NewSessionGroupServer(size int) *SessionGroupServer {
+func NewSessionGroupServer(startid int, size int, svrid string, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupServer {
 	sg := &SessionGroupServer{
-		sessions: make([]SessionServer, size),
+		sessions: make([]*SessionServer, size),
+		dispatch: dispatch,
+	}
+	
+	for i, _ := range sg.sessions {
+		sg.sessions[i] = NewServerSession(startid + i, uint32(startid + i), svrid, 0, outputChan)
 	}
 	
 	return sg

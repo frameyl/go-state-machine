@@ -38,6 +38,9 @@ func RunListener(disp *SsmpDispatch, outputChan chan []byte) {
 				continue
 			}
 			
+			// TODO Find a session in pool
+			
+			
 			// Create a new server session
 			session := NewServerSession(IdNext, SidNext, ServerID, magic, outputChan)
 			
