@@ -2,38 +2,37 @@
 package common
 
 import (
-	//"fmt"
+//"fmt"
 )
 
 type SessionGroupClient struct {
-	sessions []*SessionClient
-	dispatch *SsmpDispatch
+	sessions  []*SessionClient
+	dispatch  *SsmpDispatch
 	magicChan chan MagicReg
 }
 
 func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupClient {
 	sg := &SessionGroupClient{
-		sessions: make([]*SessionClient, size),
-		dispatch: dispatch,
+		sessions:  make([]*SessionClient, size),
+		dispatch:  dispatch,
 		magicChan: make(chan MagicReg, size/50),
 	}
-	
-	for i, s := range sg.sessions {
-		sg.sessions[i] = NewClientSession(startid + i, outputChan, sg.magicChan)
-		go s.RunClient()
-	}	
-	
+
+	for i, _ := range sg.sessions {
+		sg.sessions[i] = NewClientSession(startid+i, outputChan, sg.magicChan)
+		go sg.sessions[i].RunClient()
+	}
+
 	go sg.Register()
-	
+
 	return sg
 }
-
 
 func (sg *SessionGroupClient) Start() {
 	for _, s := range sg.sessions {
 		s.CntlChan <- S_CMD_START
-	}	
-	
+	}
+
 	return
 }
 
@@ -41,13 +40,13 @@ func (sg *SessionGroupClient) Stop() {
 	for _, s := range sg.sessions {
 		s.CntlChan <- S_CMD_STOP
 	}
-	
+
 	return
 }
 
 func (sg *SessionGroupClient) Register() {
 	for {
-		reg := <- sg.magicChan
+		reg := <-sg.magicChan
 		if reg.BufChan == nil {
 			sg.dispatch.Unregister(reg.Magic)
 		} else {
@@ -66,10 +65,10 @@ func NewSessionGroupServer(startid int, size int, svrid string, dispatch *SsmpDi
 		sessions: make([]*SessionServer, size),
 		dispatch: dispatch,
 	}
-	
+
 	for i, _ := range sg.sessions {
-		sg.sessions[i] = NewServerSession(startid + i, uint32(startid + i), svrid, 0, outputChan)
+		sg.sessions[i] = NewServerSession(startid+i, uint32(startid+i), svrid, 0, outputChan)
 	}
-	
+
 	return sg
 }
