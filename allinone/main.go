@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"go-state-machine/common"
+    "time"
+    "bytes"
 )
 
 var ChanServer2Client chan []byte
@@ -12,6 +14,9 @@ var ChanClient2Server chan []byte
 
 var DispMngServer common.DispatchMng
 var DispMngClient common.DispatchMng
+
+var SsmpDispServer *common.SsmpDispatch
+var SsmpDispClient *common.SsmpDispatch
 
 var SessionGroup *common.SessionGroupClient
 
@@ -32,6 +37,9 @@ func main() {
 		for {
 			packet := <- ChanClient2Server
 			DispMngServer.Handle(packet)
+            
+            pkt := bytes.NewReader(packet)
+            log.Println("Receive a packet from client", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
@@ -39,30 +47,45 @@ func main() {
 		for {
 			packet := <- ChanServer2Client
 			DispMngClient.Handle(packet)
+            
+            pkt := bytes.NewReader(packet)
+            log.Println("Receive a packet from server", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
 	log.Println("Start Client...")
 	start_client()
+    
+    for {
+        SessionGroup.Dump()
+        SsmpDispClient.DumpCounters()
+        SsmpDispServer.DumpCounters()
+        time.Sleep(time.Second)
+    }
 }
 
 func init_server() {
 	// Initialize dispatch for server
-    ssmpDispServer := common.NewSsmpDispatch("ServerMi1", common.SSMP_DISP_SVR)
+    SsmpDispServer = common.NewSsmpDispatch("ServerMi1", common.SSMP_DISP_SVR)
+    listener := common.NewSsmpListener("ServerMine1", 256, 1, ChanServer2Client)
 
-    DispMngServer.Add(ssmpDispServer)
+    SsmpDispServer.SetListener(listener)
+    
+    go listener.RunListener(SsmpDispServer)
+
+    DispMngServer.Add(SsmpDispServer)
 	
     DispMngServer.Start()
 }
 
 func init_client() {
 	// Initialize dispatch for client
-    ssmpDispClient := common.NewSsmpDispatch("ClientMi1", common.SSMP_DISP_CLNT)
+    SsmpDispClient = common.NewSsmpDispatch("ClientMi1", common.SSMP_DISP_CLNT)
 
-    DispMngClient.Add(ssmpDispClient)
+    DispMngClient.Add(SsmpDispClient)
 	
 	// Initialize session group for client
-	SessionGroup = common.NewSessionGroupClient(1, 10, ssmpDispClient, ChanClient2Server)
+	SessionGroup = common.NewSessionGroupClient(1, 10, SsmpDispClient, ChanClient2Server)
 
     DispMngClient.Start()
 }

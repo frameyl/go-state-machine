@@ -19,8 +19,8 @@ type SsmpDispatch struct {
 	regChan chan SsmpDispatchReg
 	// Map from Magic Number to FSM input channel
 	mapFsm map[uint64]chan []byte
-	// Default input channel for unmapped packets
-	listener chan []byte
+	// Listener for server only
+	listener *SsmpListener
 	// Counters
 	DispatchCnt
 }
@@ -79,8 +79,8 @@ func (disp SsmpDispatch) Unregister(magic uint64) error {
 	return nil
 }
 
-func (disp SsmpDispatch) RegisterListener(listenerChan chan []byte) {
-	disp.listener = listenerChan
+func (disp *SsmpDispatch) SetListener(listener *SsmpListener) {
+	disp.listener = listener
 }
 
 func (disp SsmpDispatch) GetCnt() DispatchCnt {
@@ -123,7 +123,13 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 					disp.Discard++
 					continue
 				} else if disp.mode == SSMP_DISP_SVR {
-					disp.listener <- packet
+                    if disp.listener == nil {
+                        log.Printf("%s: Listener is not initialized", disp.name)
+                        disp.Discard++
+                        continue
+                    }
+                    
+					disp.listener.ListenerChan <- packet
 					disp.Handled++
 					continue
 				}
@@ -148,17 +154,21 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 					continue
 				}
 				disp.mapFsm[reg.Magic] = reg.BufChan
-				log.Printf("Register a MagicNum %X\n", reg.Magic)
+				log.Printf("%s: Register a MagicNum %X\n", disp.name, reg.Magic)
 			} else {
 				if _, ok := disp.mapFsm[reg.Magic]; !ok {
 					log.Printf("Try to unregister a MagicNum not existed %v\n", reg.Magic)
 					continue
 				}
 				delete(disp.mapFsm, reg.Magic)
-				log.Printf("Unregister a MagicNum %X\n", reg.Magic)
+				log.Printf("%s: Unregister a MagicNum %X\n", disp.name, reg.Magic)
 			}
 		}
 	}
 
 	return nil
+}
+
+func (disp SsmpDispatch) DumpCounters() {
+    log.Printf("%s: Rx %d, Handled %d, Bypass %d, Discard %d", disp.name, disp.Rx, disp.Handled, disp.Bypass, disp.Discard)
 }

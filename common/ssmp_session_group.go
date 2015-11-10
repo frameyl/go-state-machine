@@ -3,6 +3,7 @@ package common
 
 import (
 //"fmt"
+    "log"
 )
 
 type SessionGroupClient struct {
@@ -52,6 +53,12 @@ func (sg *SessionGroupClient) Register() {
 		} else {
 			sg.dispatch.Register(reg.Magic, reg.BufChan)
 		}
+	}
+}
+
+func (sg *SessionGroupClient) Dump() {
+	for _, s := range sg.sessions {
+		log.Printf("Session %d, state %s", s.Id, s.Current())
 	}
 }
 

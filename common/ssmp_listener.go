@@ -7,24 +7,32 @@ import (
 	"log"
 )
 
-const LISTENER_BUF_LEN = 20
+const LISTENER_BUF_LEN = 100
 
-var listenerChan chan []byte
-var SidNext uint32
-var IdNext int
-var ServerID string
-
-func InitListener(svrid string) {
-	listenerChan = make(chan []byte, LISTENER_BUF_LEN)
-	SidNext = 16
-	IdNext = 1
-	ServerID = svrid
+type SsmpListener struct {
+    ListenerChan chan []byte
+    SidNext uint32
+    IdNext int
+    ServerID string
+    OutputChan chan []byte
 }
 
-func RunListener(disp *SsmpDispatch, outputChan chan []byte) {
+func NewSsmpListener(svrid string, startId int, startSid uint32, outputChan chan []byte) *SsmpListener {
+    l := &SsmpListener{
+	    ListenerChan: make(chan []byte, LISTENER_BUF_LEN),
+	    SidNext: startSid,
+	    IdNext: startId,
+	    ServerID: svrid,
+        OutputChan: outputChan,
+    }
+    
+    return l
+}
+
+func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
 	for {
 		select {
-		case pktBytes := <-listenerChan:
+		case pktBytes := <-listener.ListenerChan:
 			pkt := bytes.NewReader(pktBytes)
 			magic, _ := ReadMagicNum(pkt)
 			if magic == MAGIC_NIL {
@@ -41,7 +49,8 @@ func RunListener(disp *SsmpDispatch, outputChan chan []byte) {
 			// TODO Find a session in pool
 
 			// Create a new server session
-			session := NewServerSession(IdNext, SidNext, ServerID, magic, outputChan)
+			session := NewServerSession(listener.IdNext, listener.SidNext, listener.ServerID, magic, listener.OutputChan)
+            go session.RunServer()
 
 			disp.Register(magic, session.BufChan)
 		}
