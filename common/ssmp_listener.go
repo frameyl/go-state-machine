@@ -51,6 +51,7 @@ func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
 			// Create a new server session
 			session := NewServerSession(listener.IdNext, listener.SidNext, listener.ServerID, magic, listener.OutputChan)
             go session.RunServer()
+            session.CntlChan <- S_CMD_START
 
 			disp.Register(magic, session.BufChan)
 		}
