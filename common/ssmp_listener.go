@@ -54,6 +54,8 @@ func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
             session.CntlChan <- S_CMD_START
 
 			disp.Register(magic, session.BufChan)
+			
+			session.BufChan <- pktBytes
 		}
 	}
 }

@@ -85,7 +85,7 @@ func init_client() {
     DispMngClient.Add(SsmpDispClient)
 	
 	// Initialize session group for client
-	SessionGroup = common.NewSessionGroupClient(1, 10, SsmpDispClient, ChanClient2Server)
+	SessionGroup = common.NewSessionGroupClient(1, 1000, SsmpDispClient, ChanClient2Server)
 
     DispMngClient.Start()
 }
