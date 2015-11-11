@@ -51,6 +51,13 @@ func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
 			// Create a new server session
 			session := NewServerSession(listener.IdNext, listener.SidNext, listener.ServerID, magic, listener.OutputChan)
             go session.RunServer()
+			session.CntlChan <- S_CMD_START
+			
+			log.Printf("%s: a new session was created with ID %d, SID %d, Magic 0x%X.",
+					listener.ServerID, listener.IdNext, listener.SidNext, magic)
+					
+			listener.IdNext++
+			listener.SidNext++
 
 			disp.Register(magic, session.BufChan)
 		}
