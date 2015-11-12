@@ -58,7 +58,7 @@ func (sg *SessionGroupClient) Register() {
 
 func (sg *SessionGroupClient) Dump() {
 	for _, s := range sg.sessions {
-		log.Printf("Session %d, state %s", s.Id, s.Current())
+		log.Printf("Session %d: Sid %d, state %s", s.Id, s.Sid, s.Current())
 	}
 }
 

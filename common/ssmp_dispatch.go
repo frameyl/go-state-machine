@@ -42,9 +42,9 @@ func NewSsmpDispatch(dispName string, mode int) *SsmpDispatch {
 	disp := &SsmpDispatch{
 		name:        dispName,
 		mode:        mode,
-		bufChan:     make(chan []byte),
-		cntlChan:    make(chan int),
-		regChan:     make(chan SsmpDispatchReg),
+		bufChan:     make(chan []byte, 100),
+		cntlChan:    make(chan int, 10),
+		regChan:     make(chan SsmpDispatchReg, 100),
 		mapFsm:      make(map[uint64]chan []byte),
 		DispatchCnt: DispatchCnt{}}
 

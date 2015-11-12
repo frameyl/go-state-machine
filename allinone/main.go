@@ -67,7 +67,7 @@ func main() {
 func init_server() {
 	// Initialize dispatch for server
     SsmpDispServer = common.NewSsmpDispatch("ServerMi1", common.SSMP_DISP_SVR)
-    listener := common.NewSsmpListener("ServerMine1", 256, 1, ChanServer2Client)
+    listener := common.NewSsmpListener("ServerMine1", 1001, 60001, ChanServer2Client)
 
     SsmpDispServer.SetListener(listener)
     

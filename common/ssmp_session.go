@@ -172,7 +172,7 @@ func (ss *SessionServer) deadTimerOff() error {
 
 // enterState is a callback and will be called once a state transaction happens
 func (s *Session) enterState(e *fsm.Event) {
-	log.Println("Session", s.Id, "Entering state", s.fsm.Current(), "with Event", e.Event)
+	log.Printf("Session %d (Sid %d) Entering state %s with Event %s", s.Id, s.Sid, s.Current(), e.Event)
 }
 
 // connected is a callback and will be called once the session connects

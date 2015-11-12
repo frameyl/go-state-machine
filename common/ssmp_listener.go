@@ -53,6 +53,9 @@ func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
             go session.RunServer()
             session.CntlChan <- S_CMD_START
 
+            listener.IdNext++
+            listener.SidNext++
+
 			disp.Register(magic, session.BufChan)
 			
 			session.BufChan <- pktBytes
