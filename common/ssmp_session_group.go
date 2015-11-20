@@ -10,6 +10,14 @@ type SessionGroupClient struct {
 	sessions  []*SessionClient
 	dispatch  *SsmpDispatch
 	magicChan chan MagicReg
+	SessionGroupClientCounter
+}
+
+type SessionGroupClientCounter struct {
+	Idle int
+	Connecting int
+	Disconnecting int
+	Established int
 }
 
 func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupClient {
@@ -56,7 +64,30 @@ func (sg *SessionGroupClient) Register() {
 	}
 }
 
+func (sg *SessionGroupClient) Stats() {
+	sg.SessionGroupClientCounter = SessionGroupClientCounter{0, 0, 0, 0}
+	
+	for _, s := range sg.sessions {
+		if s.Current() == "idle" {
+			sg.Idle++
+		} else if s.Current() == "est" {
+			sg.Established++
+		} else if s.Current() == "close" {
+			sg.Disconnecting++
+		} else {
+			sg.Connecting++
+		}
+	}
+}
+
 func (sg *SessionGroupClient) Dump() {
+	sg.Stats()
+	
+	log.Printf("Session Group Counter: Idle %d, Connecting %d, Disconecting %d, Established %d",
+		sg.Idle, sg.Connecting, sg.Disconnecting, sg.Established)
+}
+
+func (sg *SessionGroupClient) DumpAll() {
 	for _, s := range sg.sessions {
 		log.Printf("Session %d: Sid %d, state %s", s.Id, s.Sid, s.Current())
 	}

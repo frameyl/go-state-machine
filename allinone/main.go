@@ -64,6 +64,7 @@ func main() {
     }
 }
 
+
 func init_server() {
 	// Initialize dispatch for server
     SsmpDispServer = common.NewSsmpDispatch("ServerMi1", common.SSMP_DISP_SVR)
