@@ -6,9 +6,11 @@ import (
 	"go-state-machine/common"
     "time"
     "bytes"
-    //"flag"
+    "flag"
     "github.com/frameyl/log4go"
 )
+
+var size int
 
 var ChanServer2Client chan []byte
 var ChanClient2Server chan []byte
@@ -24,15 +26,17 @@ var SessionGroup *common.SessionGroupClient
 func main() {
     log4go.LoadConfiguration("log.xml")
     
-	log4go.Info("Hello World!")
-	
     log.SetFlags(log.Ldate | log.Lmicroseconds)
+
+    size := flag.Uint("size", 10, "How many clinet session")
+
+    flag.Parse()
 
 	ChanClient2Server = make(chan []byte, 100)
 	ChanServer2Client = make(chan []byte, 100)
 
 	log4go.Info("Init Client...")
-	init_client()
+	init_client(int(*size))
 	log4go.Info("Init Server...")
 	init_server()
 
@@ -82,14 +86,14 @@ func init_server() {
     DispMngServer.Start()
 }
 
-func init_client() {
+func init_client(size int) {
 	// Initialize dispatch for client
     SsmpDispClient = common.NewSsmpDispatch("ClientMi1", common.SSMP_DISP_CLNT)
 
     DispMngClient.Add(SsmpDispClient)
 	
 	// Initialize session group for client
-	SessionGroup = common.NewSessionGroupClient(1, 5000, SsmpDispClient, ChanClient2Server)
+	SessionGroup = common.NewSessionGroupClient(1, size, SsmpDispClient, ChanClient2Server)
 
     DispMngClient.Start()
 }
