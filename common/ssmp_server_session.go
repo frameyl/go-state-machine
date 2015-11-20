@@ -7,6 +7,7 @@ import (
 	//"time"
 	//"fmt"
 	"github.com/looplab/fsm"
+    "github.com/frameyl/log4go"
 )
 
 func (ss *SessionServer) deadTimerOn() error {
@@ -20,7 +21,7 @@ func (ss *SessionServer) deadTimerOff() error {
 }
 
 func (s *SessionServer) deadTimeout(e *fsm.Event) {
-	log.Println("Session", s.Id, "cleaned", "with Event", e.Event)
+	log4go.Fine("Session", s.Id, "cleaned", "with Event", e.Event)
 
 	current := s.fsm.Current()
 	switch current {
@@ -29,7 +30,7 @@ func (s *SessionServer) deadTimeout(e *fsm.Event) {
 		s.Magic = 0
 
 	default:
-		log.Println("Invalide state when dead timer expired.")
+		log4go.Error("Invalide state when dead timer expired.")
 		return
 	}
 
@@ -44,7 +45,7 @@ func (s *SessionServer) recvHello(e *fsm.Event) {
 	s.RxHello++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
+		log4go.Trace("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
@@ -59,14 +60,14 @@ func (s *SessionServer) recvRequest(e *fsm.Event) {
 	s.RxRequest++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
+		log4go.Trace("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
 
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
-		log.Println("Wrong Server ID", s.Svrid)
+		log4go.Trace("Wrong Server ID", s.Svrid)
 		e.Cancel()
 		return
 	}
@@ -81,21 +82,21 @@ func (s *SessionServer) recvConfirm(e *fsm.Event) {
 	s.RxConfirm++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
+		log4go.Trace("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
 
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
-		log.Println("Wrong Server ID", s.Svrid)
+		log4go.Trace("Wrong Server ID", s.Svrid)
 		e.Cancel()
 		return
 	}
 
 	sid, _ := ReadSessionID(pkt)
 	if sid != s.Sid {
-		log.Println("Wrong Session ID", s.Sid)
+		log4go.Trace("Wrong Session ID", s.Sid)
 		e.Cancel()
 		return
 	}
@@ -117,14 +118,14 @@ func (s *SessionServer) recvClose(e *fsm.Event) {
 
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
-		log.Println("Wrong Server ID", s.Svrid)
+		log4go.Trace("Wrong Server ID", s.Svrid)
 		e.Cancel()
 		return
 	}
 
 	sid, _ := ReadSessionID(pkt)
 	if sid != s.Sid {
-		log.Println("Wrong Session ID", s.Sid)
+		log4go.Trace("Wrong Session ID", s.Sid)
 		e.Cancel()
 		return
 	}

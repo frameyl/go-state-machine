@@ -2,8 +2,9 @@
 package common
 
 import (
-//"fmt"
-    "log"
+    //"fmt"
+    //"log"
+    "github.com/frameyl/log4go"
 )
 
 type SessionGroupClient struct {
@@ -18,6 +19,8 @@ type SessionGroupClientCounter struct {
 	Connecting int
 	Disconnecting int
 	Established int
+    SessionCnt
+    SessionClientCnt
 }
 
 func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupClient {
@@ -65,7 +68,7 @@ func (sg *SessionGroupClient) Register() {
 }
 
 func (sg *SessionGroupClient) Stats() {
-	sg.SessionGroupClientCounter = SessionGroupClientCounter{0, 0, 0, 0}
+	sg.SessionGroupClientCounter = SessionGroupClientCounter{}
 	
 	for _, s := range sg.sessions {
 		if s.Current() == "idle" {
@@ -77,19 +80,32 @@ func (sg *SessionGroupClient) Stats() {
 		} else {
 			sg.Connecting++
 		}
+        
+        sg.Tx += s.Tx
+        sg.TxHello += s.TxHello
+        sg.TxRequest += s.TxRequest
+        sg.TxConfirm += s.TxConfirm
+        sg.TxDisc += s.TxDisc
+        sg.Rx += s.Rx
+        sg.RxHello += s.RxHello
+        sg.RxReply += s.RxReply
+        sg.RxDisc += s.RxDisc
+        sg.Retry += s.Retry
 	}
 }
 
 func (sg *SessionGroupClient) Dump() {
 	sg.Stats()
 	
-	log.Printf("Session Group Counter: Idle %d, Connecting %d, Disconecting %d, Established %d",
+	log4go.Info("Session Group Counter: Idle %d, Connecting %d, Disconecting %d, Established %d",
 		sg.Idle, sg.Connecting, sg.Disconnecting, sg.Established)
+    log4go.Info("Session Group Packet Counter: Tx %d, Rx %d, Retry %d, TxHello %d, RxHello %d, TxRequest %d, TxConfirm %d, RxReply %d",
+        sg.Tx, sg.Rx, sg.Retry, sg.TxHello, sg.RxHello, sg.TxRequest, sg.TxConfirm, sg.RxReply)
 }
 
 func (sg *SessionGroupClient) DumpAll() {
 	for _, s := range sg.sessions {
-		log.Printf("Session %d: Sid %d, state %s", s.Id, s.Sid, s.Current())
+		log4go.Info("Session %d: Sid %d, state %s", s.Id, s.Sid, s.Current())
 	}
 }
 

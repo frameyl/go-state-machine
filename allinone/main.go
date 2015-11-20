@@ -2,11 +2,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"go-state-machine/common"
     "time"
     "bytes"
+    //"flag"
+    "github.com/frameyl/log4go"
 )
 
 var ChanServer2Client chan []byte
@@ -21,16 +22,18 @@ var SsmpDispClient *common.SsmpDispatch
 var SessionGroup *common.SessionGroupClient
 
 func main() {
-	fmt.Println("Hello World!")
+    log4go.LoadConfiguration("log.xml")
+    
+	log4go.Info("Hello World!")
 	
     log.SetFlags(log.Ldate | log.Lmicroseconds)
 
 	ChanClient2Server = make(chan []byte, 100)
 	ChanServer2Client = make(chan []byte, 100)
 
-	log.Println("Init Client...")
+	log4go.Info("Init Client...")
 	init_client()
-	log.Println("Init Server...")
+	log4go.Info("Init Server...")
 	init_server()
 
 	go func() {
@@ -39,7 +42,7 @@ func main() {
 			DispMngServer.Handle(packet)
             
             pkt := bytes.NewReader(packet)
-            log.Println("Receive a packet from client", common.DumpSsmpPacket(pkt))
+            log4go.Fine("Receive a packet from client", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
@@ -49,17 +52,17 @@ func main() {
 			DispMngClient.Handle(packet)
             
             pkt := bytes.NewReader(packet)
-            log.Println("Receive a packet from server", common.DumpSsmpPacket(pkt))
+            log4go.Fine("Receive a packet from server", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
-	log.Println("Start Client...")
+	log4go.Info("Start Client...")
 	start_client()
     
     for {
         SessionGroup.Dump()
-        SsmpDispClient.DumpCounters()
-        SsmpDispServer.DumpCounters()
+        log4go.Info(SsmpDispClient.DumpCounters())
+        log4go.Info(SsmpDispServer.DumpCounters())
         time.Sleep(time.Second)
     }
 }
@@ -86,7 +89,7 @@ func init_client() {
     DispMngClient.Add(SsmpDispClient)
 	
 	// Initialize session group for client
-	SessionGroup = common.NewSessionGroupClient(1, 1000, SsmpDispClient, ChanClient2Server)
+	SessionGroup = common.NewSessionGroupClient(1, 5000, SsmpDispClient, ChanClient2Server)
 
     DispMngClient.Start()
 }

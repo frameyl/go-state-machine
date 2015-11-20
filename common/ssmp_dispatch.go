@@ -2,8 +2,9 @@ package common
 
 import (
 	"bytes"
-	//"fmt"
-	"log"
+	"fmt"
+    //"log"
+    "github.com/frameyl/log4go"
 )
 
 type SsmpDispatch struct {
@@ -124,7 +125,7 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 					continue
 				} else if disp.mode == SSMP_DISP_SVR {
                     if disp.listener == nil {
-                        log.Printf("%s: Listener is not initialized", disp.name)
+                        log4go.Critical("%s: Listener is not initialized", disp.name)
                         disp.Discard++
                         continue
                     }
@@ -144,24 +145,24 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 				return nil
 			} else if cmd == SSMP_DISP_RESET {
 				disp.mapFsm = make(map[uint64]chan []byte)
-				log.Printf("Reset Dispatch %s", disp.name)
+				log4go.Trace("Reset Dispatch %s", disp.name)
 			}
 
 		case reg := <-disp.regChan:
 			if reg.BufChan != nil {
 				if _, ok := disp.mapFsm[reg.Magic]; ok {
-					log.Printf("Try to register a MagicNum already existed %v\n", reg.Magic)
+					log4go.Error("Try to register a MagicNum already existed %v\n", reg.Magic)
 					continue
 				}
 				disp.mapFsm[reg.Magic] = reg.BufChan
-				log.Printf("%s: Register a MagicNum %X\n", disp.name, reg.Magic)
+				log4go.Trace("%s: Register a MagicNum %X\n", disp.name, reg.Magic)
 			} else {
 				if _, ok := disp.mapFsm[reg.Magic]; !ok {
-					log.Printf("Try to unregister a MagicNum not existed %v\n", reg.Magic)
+					log4go.Error("Try to unregister a MagicNum not existed %v\n", reg.Magic)
 					continue
 				}
 				delete(disp.mapFsm, reg.Magic)
-				log.Printf("%s: Unregister a MagicNum %X\n", disp.name, reg.Magic)
+				log4go.Trace("%s: Unregister a MagicNum %X\n", disp.name, reg.Magic)
 			}
 		}
 	}
@@ -169,6 +170,6 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 	return nil
 }
 
-func (disp SsmpDispatch) DumpCounters() {
-    log.Printf("%s: Rx %d, Handled %d, Bypass %d, Discard %d", disp.name, disp.Rx, disp.Handled, disp.Bypass, disp.Discard)
+func (disp SsmpDispatch) DumpCounters() string {
+    return fmt.Sprintf("%s: Rx %d, Handled %d, Bypass %d, Discard %d", disp.name, disp.Rx, disp.Handled, disp.Bypass, disp.Discard)
 }

@@ -1,0 +1,862 @@
+[2015/11/20 23:57:53 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 3000, Connecting 0, Disconecting 0, Established 0
+[2015/11/20 23:57:53 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/20 23:57:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 2473, Connecting 527, Disconecting 0, Established 0
+[2015/11/20 23:57:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 527, Rx 0, Retry 0, TxHello 527, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/20 23:58:15 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/20 23:58:15 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/20 23:58:16 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/20 23:58:16 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/20 23:58:17 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/20 23:58:17 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:02:06 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:02:06 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x4D65822107FCFD52
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x78629A0F5F3F164F
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x55104DC76695721D
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x380704BB7B4D7C03
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x365A858149C6E2D1
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x57E9D1860D1D68D8
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x866CB397916001E
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x1408D2AC22C4D294
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0xC697F48392907A0
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x268447A4189DEB99
+Server:  
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+Session:  60001
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+Session:  60009
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+Session:  60010
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+Session:  60010
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+Session:  60002
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+Session:  60003
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+Session:  60004
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+Session:  60003
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+Session:  60005
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+Session:  60004
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+Session:  60005
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+Session:  60009
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+Session:  60008
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+Session:  60002
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+Session:  60006
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+Session:  60006
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+Session:  60001
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+Session:  60008
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+Session:  60007
+)
+[2015/11/21 00:02:06 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+Session:  60007
+)
+[2015/11/21 00:02:07 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:02:07 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:02:08 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:02:08 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:05:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:05:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x4D65822107FCFD52
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x78629A0F5F3F164F
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x55104DC76695721D
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x380704BB7B4D7C03
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x365A858149C6E2D1
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x57E9D1860D1D68D8
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x866CB397916001E
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x1408D2AC22C4D294
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0xC697F48392907A0
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x268447A4189DEB99
+Server:  
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+Session:  60001
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x4D65822107FCFD52
+Server:  ServerMine1
+Session:  60001
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Hello
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+Session:  60005
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+Session:  60006
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+Session:  60007
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+Session:  60008
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+Session:  60009
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+Session:  60010
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+Session:  60002
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+Session:  60003
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Request
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·002:56) Receive a packet from server%!(EXTRA string=Protocol:  SSMPv1
+Type:  Reply
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+Session:  60004
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x365A858149C6E2D1
+Server:  ServerMine1
+Session:  60005
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x57E9D1860D1D68D8
+Server:  ServerMine1
+Session:  60006
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x866CB397916001E
+Server:  ServerMine1
+Session:  60007
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0xC697F48392907A0
+Server:  ServerMine1
+Session:  60009
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x78629A0F5F3F164F
+Server:  ServerMine1
+Session:  60002
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x55104DC76695721D
+Server:  ServerMine1
+Session:  60003
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x380704BB7B4D7C03
+Server:  ServerMine1
+Session:  60004
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x1408D2AC22C4D294
+Server:  ServerMine1
+Session:  60008
+)
+[2015/11/21 00:05:54 CST] [DEBG] (main.func·001:46) Receive a packet from client%!(EXTRA string=Protocol:  SSMPv1
+Type:  Confirm
+Magic: 0x268447A4189DEB99
+Server:  ServerMine1
+Session:  60010
+)
+[2015/11/21 00:05:55 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:05:55 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:05:56 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:05:56 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:05:57 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:05:57 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:19:21 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:19:21 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:19:21 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:19:21 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:19:21 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:19:21 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1001, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=2, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=3, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=4, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=5, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=6, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=7, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=8, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=9, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=10, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1002, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1003, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1004, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1005, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1006, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1007, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1008, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1009, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:21 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1010, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:19:22 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:19:22 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:19:23 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:19:23 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:19:24 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:19:24 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:19:25 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:19:25 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:25:41 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:25:41 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:25:41 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:25:41 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:25:41 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:25:41 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:25:41 CST] [INFO] (main.main:64) ClientMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:25:41 CST] [INFO] (main.main:65) ServerMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=2, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1001, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1002, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=3, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=4, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=5, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=6, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=7, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=8, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=9, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=10, string=Connected, string=with Event, string=reply_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1003, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1004, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1005, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1006, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1007, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1008, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1009, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:41 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session%!(EXTRA int=1010, string=Connected, string=with Event, string=confirm_received)
+[2015/11/21 00:25:42 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:25:42 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:25:42 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:25:42 CST] [INFO] (main.main:65) ServerMi1: Rx 30, Handled 30, Bypass 0, Discard 0
+[2015/11/21 00:25:43 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:25:43 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 30, Rx 20, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 10, RxReply 10
+[2015/11/21 00:25:43 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:25:43 CST] [INFO] (main.main:65) ServerMi1: Rx 30, Handled 30, Bypass 0, Discard 0
+[2015/11/21 00:28:57 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:28:57 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:28:57 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:28:57 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:28:57 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:28:57 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:28:57 CST] [INFO] (main.main:64) ClientMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:28:57 CST] [INFO] (main.main:65) ServerMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1001 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 3 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 6 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 7 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 8 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 9 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 10 Connected with Event reply_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1003 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1006 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1007 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1008 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1009 Connected with Event confirm_received
+[2015/11/21 00:28:57 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1010 Connected with Event confirm_received
+[2015/11/21 00:28:58 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 3, Disconecting 0, Established 7
+[2015/11/21 00:28:58 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 26, Rx 16, Retry 0, TxHello 10, RxHello 9, TxRequest 9, TxConfirm 7, RxReply 7
+[2015/11/21 00:28:58 CST] [INFO] (main.main:64) ClientMi1: Rx 17, Handled 16, Bypass 0, Discard 1
+[2015/11/21 00:28:58 CST] [INFO] (main.main:65) ServerMi1: Rx 26, Handled 26, Bypass 0, Discard 0
+[2015/11/21 00:28:59 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 3, Disconecting 0, Established 7
+[2015/11/21 00:28:59 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 26, Rx 16, Retry 0, TxHello 10, RxHello 9, TxRequest 9, TxConfirm 7, RxReply 7
+[2015/11/21 00:28:59 CST] [INFO] (main.main:64) ClientMi1: Rx 17, Handled 16, Bypass 0, Discard 1
+[2015/11/21 00:28:59 CST] [INFO] (main.main:65) ServerMi1: Rx 26, Handled 26, Bypass 0, Discard 0
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 2 Connected with Event reply_received
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1002 Connected with Event confirm_received
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 4 Connected with Event reply_received
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1004 Connected with Event confirm_received
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 5 Connected with Event reply_received
+[2015/11/21 00:28:59 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1005 Connected with Event confirm_received
+[2015/11/21 00:29:00 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:29:00 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 33, Rx 20, Retry 3, TxHello 11, RxHello 10, TxRequest 12, TxConfirm 10, RxReply 10
+[2015/11/21 00:29:00 CST] [INFO] (main.main:64) ClientMi1: Rx 21, Handled 20, Bypass 0, Discard 1
+[2015/11/21 00:29:00 CST] [INFO] (main.main:65) ServerMi1: Rx 33, Handled 33, Bypass 0, Discard 0
+[2015/11/21 00:29:01 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:29:01 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 33, Rx 20, Retry 3, TxHello 11, RxHello 10, TxRequest 12, TxConfirm 10, RxReply 10
+[2015/11/21 00:29:01 CST] [INFO] (main.main:64) ClientMi1: Rx 21, Handled 20, Bypass 0, Discard 1
+[2015/11/21 00:29:01 CST] [INFO] (main.main:65) ServerMi1: Rx 33, Handled 33, Bypass 0, Discard 0
+[2015/11/21 00:30:34 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:30:34 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:30:34 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:30:34 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:30:34 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:30:34 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:30:34 CST] [INFO] (main.main:64) ClientMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:30:34 CST] [INFO] (main.main:65) ServerMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:30:34 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1 Connected with Event reply_received
+[2015/11/21 00:30:34 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1001 Connected with Event confirm_received
+[2015/11/21 00:30:35 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 9, Disconecting 0, Established 1
+[2015/11/21 00:30:35 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 15, Rx 5, Retry 0, TxHello 10, RxHello 4, TxRequest 4, TxConfirm 1, RxReply 1
+[2015/11/21 00:30:35 CST] [INFO] (main.main:64) ClientMi1: Rx 11, Handled 5, Bypass 0, Discard 6
+[2015/11/21 00:30:35 CST] [INFO] (main.main:65) ServerMi1: Rx 15, Handled 15, Bypass 0, Discard 0
+[2015/11/21 00:30:36 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 9, Disconecting 0, Established 1
+[2015/11/21 00:30:36 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 15, Rx 5, Retry 0, TxHello 10, RxHello 4, TxRequest 4, TxConfirm 1, RxReply 1
+[2015/11/21 00:30:36 CST] [INFO] (main.main:64) ClientMi1: Rx 11, Handled 5, Bypass 0, Discard 6
+[2015/11/21 00:30:36 CST] [INFO] (main.main:65) ServerMi1: Rx 15, Handled 15, Bypass 0, Discard 0
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 3 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 4 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 5 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1003 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1004 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1005 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 6 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 7 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 2 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1006 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1007 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1002 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 8 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1008 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 9 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 10 Connected with Event reply_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1009 Connected with Event confirm_received
+[2015/11/21 00:30:36 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1010 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:32:16 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:32:16 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:32:16 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:32:16 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:32:16 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:32:16 CST] [INFO] (main.main:64) ClientMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:32:16 CST] [INFO] (main.main:65) ServerMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1001 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 4 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 5 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 6 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 7 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 8 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 9 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 10 Connected with Event reply_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1004 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1005 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1006 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1007 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1008 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1009 Connected with Event confirm_received
+[2015/11/21 00:32:16 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1010 Connected with Event confirm_received
+[2015/11/21 00:32:17 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 2, Disconecting 0, Established 8
+[2015/11/21 00:32:17 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 28, Rx 18, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 8, RxReply 8
+[2015/11/21 00:32:17 CST] [INFO] (main.main:64) ClientMi1: Rx 18, Handled 18, Bypass 0, Discard 0
+[2015/11/21 00:32:17 CST] [INFO] (main.main:65) ServerMi1: Rx 28, Handled 28, Bypass 0, Discard 0
+[2015/11/21 00:32:18 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 2, Disconecting 0, Established 8
+[2015/11/21 00:32:18 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 28, Rx 18, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 8, RxReply 8
+[2015/11/21 00:32:18 CST] [INFO] (main.main:64) ClientMi1: Rx 18, Handled 18, Bypass 0, Discard 0
+[2015/11/21 00:32:18 CST] [INFO] (main.main:65) ServerMi1: Rx 28, Handled 28, Bypass 0, Discard 0
+[2015/11/21 00:32:18 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 2 Connected with Event reply_received
+[2015/11/21 00:32:18 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1002 Connected with Event confirm_received
+[2015/11/21 00:32:18 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 3 Connected with Event reply_received
+[2015/11/21 00:32:18 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1003 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [INFO] (main.main:27) Hello World!
+[2015/11/21 00:34:50 CST] [INFO] (main.main:34) Init Client...
+[2015/11/21 00:34:50 CST] [INFO] (main.main:36) Init Server...
+[2015/11/21 00:34:50 CST] [INFO] (main.main:59) Start Client...
+[2015/11/21 00:34:50 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 10, Connecting 0, Disconecting 0, Established 0
+[2015/11/21 00:34:50 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 0, Rx 0, Retry 0, TxHello 0, RxHello 0, TxRequest 0, TxConfirm 0, RxReply 0
+[2015/11/21 00:34:50 CST] [INFO] (main.main:64) ClientMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:34:50 CST] [INFO] (main.main:65) ServerMi1: Rx 0, Handled 0, Bypass 0, Discard 0
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 4D65822107FCFD52
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 78629A0F5F3F164F
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 55104DC76695721D
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 380704BB7B4D7C03
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 365A858149C6E2D1
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 57E9D1860D1D68D8
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 866CB397916001E
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 1408D2AC22C4D294
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum C697F48392907A0
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ClientMi1: Register a MagicNum 268447A4189DEB99
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 4D65822107FCFD52
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 78629A0F5F3F164F
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 55104DC76695721D
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 380704BB7B4D7C03
+
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 4D65822107FCFD52
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 365A858149C6E2D1
+
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 2 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1001 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 78629A0F5F3F164F
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 57E9D1860D1D68D8
+
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 3 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1002 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 55104DC76695721D
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 866CB397916001E
+
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 4 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1003 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 380704BB7B4D7C03
+
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 1408D2AC22C4D294
+
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 5 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1004 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum C697F48392907A0
+
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1006 Connected with Event confirm_received
+[2015/11/21 00:34:50 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 6 Connected with Event reply_received
+[2015/11/21 00:34:50 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 365A858149C6E2D1
+
+[2015/11/21 00:34:51 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:158) ServerMi1: Register a MagicNum 268447A4189DEB99
+
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1005 Connected with Event confirm_received
+[2015/11/21 00:34:51 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 57E9D1860D1D68D8
+
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 8 Connected with Event reply_received
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 7 Connected with Event reply_received
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 9 Connected with Event reply_received
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1007 Connected with Event confirm_received
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1008 Connected with Event confirm_received
+[2015/11/21 00:34:51 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1009 Connected with Event confirm_received
+[2015/11/21 00:34:51 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 866CB397916001E
+
+[2015/11/21 00:34:51 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 1408D2AC22C4D294
+
+[2015/11/21 00:34:51 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum C697F48392907A0
+
+[2015/11/21 00:34:51 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 1, Disconecting 0, Established 9
+[2015/11/21 00:34:51 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 29, Rx 19, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 9, RxReply 9
+[2015/11/21 00:34:51 CST] [INFO] (main.main:64) ClientMi1: Rx 19, Handled 19, Bypass 0, Discard 0
+[2015/11/21 00:34:51 CST] [INFO] (main.main:65) ServerMi1: Rx 29, Handled 29, Bypass 0, Discard 0
+[2015/11/21 00:34:52 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 1, Disconecting 0, Established 9
+[2015/11/21 00:34:52 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 29, Rx 19, Retry 0, TxHello 10, RxHello 10, TxRequest 10, TxConfirm 9, RxReply 9
+[2015/11/21 00:34:52 CST] [INFO] (main.main:64) ClientMi1: Rx 19, Handled 19, Bypass 0, Discard 0
+[2015/11/21 00:34:52 CST] [INFO] (main.main:65) ServerMi1: Rx 29, Handled 29, Bypass 0, Discard 0
+[2015/11/21 00:34:52 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 10 Connected with Event reply_received
+[2015/11/21 00:34:52 CST] [TRAC] (go-state-machine/common.(*SsmpDispatch).Handle:165) ClientMi1: Unregister a MagicNum 268447A4189DEB99
+
+[2015/11/21 00:34:52 CST] [DEBG] (go-state-machine/common.(*Session).connected:153) Session 1010 Connected with Event confirm_received
+[2015/11/21 00:34:53 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:34:53 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 31, Rx 20, Retry 1, TxHello 10, RxHello 10, TxRequest 11, TxConfirm 10, RxReply 10
+[2015/11/21 00:34:53 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:34:53 CST] [INFO] (main.main:65) ServerMi1: Rx 31, Handled 31, Bypass 0, Discard 0
+[2015/11/21 00:34:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:34:54 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 31, Rx 20, Retry 1, TxHello 10, RxHello 10, TxRequest 11, TxConfirm 10, RxReply 10
+[2015/11/21 00:34:54 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:34:54 CST] [INFO] (main.main:65) ServerMi1: Rx 31, Handled 31, Bypass 0, Discard 0
+[2015/11/21 00:34:55 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:34:55 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 31, Rx 20, Retry 1, TxHello 10, RxHello 10, TxRequest 11, TxConfirm 10, RxReply 10
+[2015/11/21 00:34:55 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:34:55 CST] [INFO] (main.main:65) ServerMi1: Rx 31, Handled 31, Bypass 0, Discard 0
+[2015/11/21 00:34:56 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:101) Session Group Counter: Idle 0, Connecting 0, Disconecting 0, Established 10
+[2015/11/21 00:34:56 CST] [INFO] (go-state-machine/common.(*SessionGroupClient).Dump:103) Session Group Packet Counter: Tx 31, Rx 20, Retry 1, TxHello 10, RxHello 10, TxRequest 11, TxConfirm 10, RxReply 10
+[2015/11/21 00:34:56 CST] [INFO] (main.main:64) ClientMi1: Rx 20, Handled 20, Bypass 0, Discard 0
+[2015/11/21 00:34:56 CST] [INFO] (main.main:65) ServerMi1: Rx 31, Handled 31, Bypass 0, Discard 0

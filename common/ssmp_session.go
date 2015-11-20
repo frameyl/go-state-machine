@@ -2,11 +2,12 @@ package common
 
 import (
 	"bytes"
-	"log"
+	//"log"
 	//"math/rand"
 	"time"
 	//"fmt"
 	"github.com/looplab/fsm"
+    "github.com/frameyl/log4go"
 )
 
 // OutputChan is the channel for sending packets out
@@ -106,28 +107,34 @@ func (s *Session) sendPacket(mtype MsgType) error {
 		pktLen += LEN_SESSION_ID
 	}
 
+    s.Tx++
 	s.OutputChan <- buf.Bytes()
 
 	return nil
 }
 
 func (s *Session) sendHello() error {
+    s.TxHello++
 	return s.sendPacket(MSG_HELLO)
 }
 
-func (s *Session) sendRequest() error {
+func (s *SessionClient) sendRequest() error {
+    s.TxRequest++
 	return s.sendPacket(MSG_REQUEST)
 }
 
-func (s *Session) sendConfirm() error {
+func (s *SessionClient) sendConfirm() error {
+    s.TxConfirm++
 	return s.sendPacket(MSG_CONFIRM)
 }
 
 func (s *Session) sendClose() error {
+    s.TxDisc++
 	return s.sendPacket(MSG_CLOSE)
 }
 
-func (s *Session) sendReply() error {
+func (s *SessionServer) sendReply() error {
+    s.TxReply++
 	return s.sendPacket(MSG_REPLY)
 }
 
@@ -138,23 +145,23 @@ const SESSION_TIMEOUT_DEAD = 5 * time.Second
 
 // enterState is a callback and will be called once a state transaction happens
 func (s *Session) enterState(e *fsm.Event) {
-	log.Printf("Session %d (Sid %d) Entering state %s with Event %s", s.Id, s.Sid, s.Current(), e.Event)
+	log4go.Fine("Session %d (Sid %d) Entering state %s with Event %s", s.Id, s.Sid, s.Current(), e.Event)
 }
 
 // connected is a callback and will be called once the session connects
 func (s *Session) connected(e *fsm.Event) {
-	log.Println("Session", s.Id, "Connected", "with Event", e.Event)
+	log4go.Debug("Session %d Connected with Event %s", s.Id, e.Event)
 	s.MagicChan <- MagicReg{nil, s.Magic}
 	return
 }
 
 func (s *Session) disconnected(e *fsm.Event) {
-	log.Println("Session", s.Id, "Disconnected", "with Event", e.Event)
+	log4go.Debug("Session %d Disconnected with Event %s", s.Id, e.Event)
 	return
 }
 
 func (s *Session) clean(e *fsm.Event) {
-	log.Println("Session", s.Id, "cleaned", "with Event", e.Event)
+	log4go.Fine("Session %d cleaned with Event %s", s.Id, e.Event)
 
 	// Clean SrvID, Magic
 	s.Svrid = ""

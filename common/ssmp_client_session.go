@@ -2,11 +2,12 @@ package common
 
 import (
 	"bytes"
-	"log"
+	//"log"
 	"math/rand"
 	//"time"
 	//"fmt"
 	"github.com/looplab/fsm"
+    "github.com/frameyl/log4go"
 )
 
 // Timer functions:
@@ -38,7 +39,7 @@ func (cs *SessionClient) deadTimerOff() error {
 
 // retryTimeout is a callback and will be called after a retry timer expired
 func (s *SessionClient) retryTimeout(e *fsm.Event) {
-	log.Println("Session", s.Id, "retry Timer expired")
+	log4go.Fine("Session", s.Id, "retry Timer expired")
 
 	current := s.fsm.Current()
 	switch current {
@@ -52,7 +53,7 @@ func (s *SessionClient) retryTimeout(e *fsm.Event) {
 		s.sendClose()
 
 	default:
-		log.Println("Invalide state when retry timer expired.")
+		log4go.Error("Invalide state when retry timer expired.")
 		return
 	}
 
@@ -63,7 +64,7 @@ func (s *SessionClient) retryTimeout(e *fsm.Event) {
 }
 
 func (s *SessionClient) deadTimeout(e *fsm.Event) {
-	log.Println("Session", s.Id, "dead Timer expired")
+	log4go.Fine("Session", s.Id, "dead Timer expired")
 
 	current := s.fsm.Current()
 	switch current {
@@ -74,7 +75,7 @@ func (s *SessionClient) deadTimeout(e *fsm.Event) {
 		s.Magic = 0
 
 	default:
-		log.Println("Invalide state when dead timer expired.")
+		log4go.Error("Invalide state when dead timer expired.")
 		return
 	}
 
@@ -88,7 +89,7 @@ func (s *SessionClient) recvHello(e *fsm.Event) {
 	s.RxHello++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
+		log4go.Trace("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
@@ -104,14 +105,14 @@ func (s *SessionClient) recvReply(e *fsm.Event) {
 	s.RxReply++
 	magic, _ := ReadMagicNum(pkt)
 	if magic != s.Magic {
-		log.Println("Wrong Magic number", s.Magic)
+		log4go.Trace("Wrong Magic number", s.Magic)
 		e.Cancel()
 		return
 	}
 
 	svrid, _ := ReadServerID(pkt)
 	if svrid != s.Svrid {
-		log.Println("Wrong Server ID", s.Svrid)
+		log4go.Trace("Wrong Server ID", s.Svrid)
 		e.Cancel()
 		return
 	}
@@ -219,7 +220,7 @@ func (s *SessionClient) RunClient() {
 			} else if cmd == S_CMD_CLEAN {
 				s.fsm.Event("clean")
 			} else {
-				log.Println("Invalide command received", cmd)
+				log4go.Error("Invalide command received", cmd)
 			}
 		case pktBytes := <-s.BufChan:
 			// got a packet here
@@ -232,7 +233,7 @@ func (s *SessionClient) RunClient() {
 			} else if msgType == MSG_REPLY {
 				s.fsm.Event("reply_received", pkt)
 			} else {
-				log.Println("Invalid package received, type", msgType)
+				log4go.Error("Invalid package received, type", msgType)
 			}
 		}
 	}
