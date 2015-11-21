@@ -2,7 +2,7 @@
 package main
 
 import (
-	"log"
+	//"log"
 	"go-state-machine/common"
     "time"
     "bytes"
@@ -26,7 +26,7 @@ var SessionGroup *common.SessionGroupClient
 func main() {
     log4go.LoadConfiguration("log.xml")
     
-    log.SetFlags(log.Ldate | log.Lmicroseconds)
+    //log.SetFlags(log.Ldate | log.Lmicroseconds)
 
     size := flag.Uint("size", 10, "How many clinet session")
 
@@ -67,7 +67,11 @@ func main() {
         SessionGroup.Dump()
         log4go.Info(SsmpDispClient.DumpCounters())
         log4go.Info(SsmpDispServer.DumpCounters())
-        time.Sleep(time.Second)
+        time.Sleep(50 * time.Millisecond)
+        
+        if SessionGroup.Established == int(*size) {
+            break
+        }
     }
 }
 

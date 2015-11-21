@@ -1,25 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	//"fmt"
+	//"log"
 	"go-state-machine/common"
     "time"
     "bytes"
 	"testing"
+    "github.com/frameyl/log4go"
 )
 
+var tsize = 1000
+
 func BenchmarkSessionsConnecting(b *testing.B) {
-	fmt.Println("Hello World!")
-	
-    log.SetFlags(log.Ldate | log.Lmicroseconds)
+    log4go.LoadConfiguration("log.xml")
 
 	ChanClient2Server = make(chan []byte, 100)
 	ChanServer2Client = make(chan []byte, 100)
 
-	log.Println("Init Client...")
-	init_client()
-	log.Println("Init Server...")
+	log4go.Info("Bench Init Client...")
+	init_client(tsize)
+	log4go.Info("Bench Init Server...")
 	init_server()
 
 	go func() {
@@ -28,7 +29,7 @@ func BenchmarkSessionsConnecting(b *testing.B) {
 			DispMngServer.Handle(packet)
             
             pkt := bytes.NewReader(packet)
-            log.Println("Receive a packet from client", common.DumpSsmpPacket(pkt))
+            log4go.Fine("Receive a packet from client", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
@@ -38,23 +39,23 @@ func BenchmarkSessionsConnecting(b *testing.B) {
 			DispMngClient.Handle(packet)
             
             pkt := bytes.NewReader(packet)
-            log.Println("Receive a packet from server", common.DumpSsmpPacket(pkt))
+            log4go.Fine("Receive a packet from server", common.DumpSsmpPacket(pkt))
 		}
 	}()
 
-	b.ResetTimer()
-
-	log.Println("Start Client...")
+    b.ResetTimer()
+    
+	log4go.Info("Bench Start Client...")
 	start_client()
     
     for {
-        SessionGroup.Dump()
-        SsmpDispClient.DumpCounters()
-        SsmpDispServer.DumpCounters()
-        time.Sleep(time.Second)
-		
-		if SessionGroup.Established == 1000 {
-			break
-		}
+        SessionGroup.Stats()
+        //log4go.Info(SsmpDispClient.DumpCounters())
+        //log4go.Info(SsmpDispServer.DumpCounters())
+        time.Sleep(10*time.Millisecond)
+        
+        if SessionGroup.Established == tsize {
+            break
+        }
     }
 }
