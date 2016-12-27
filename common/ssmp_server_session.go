@@ -6,8 +6,8 @@ import (
 	//"math/rand"
 	//"time"
 	//"fmt"
+	"github.com/frameyl/log4go"
 	"github.com/looplab/fsm"
-    "github.com/frameyl/log4go"
 )
 
 func (ss *SessionServer) deadTimerOn() error {
@@ -30,13 +30,12 @@ func (s *SessionServer) deadTimeout(e *fsm.Event) {
 		s.Magic = 0
 
 	default:
-		log4go.Error("Invalide state when dead timer expired.")
+		log4go.Error("Invalid state when dead timer expired.", current)
 		return
 	}
 
 	return
 }
-
 
 func (s *SessionServer) recvHello(e *fsm.Event) {
 	var pkt *bytes.Reader

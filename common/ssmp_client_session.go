@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	//"time"
 	//"fmt"
+	"github.com/frameyl/log4go"
 	"github.com/looplab/fsm"
-    "github.com/frameyl/log4go"
 )
 
 // Timer functions:
@@ -36,7 +36,6 @@ func (cs *SessionClient) deadTimerOff() error {
 	return nil
 }
 
-
 // retryTimeout is a callback and will be called after a retry timer expired
 func (s *SessionClient) retryTimeout(e *fsm.Event) {
 	log4go.Fine("Session", s.Id, "retry Timer expired")
@@ -53,7 +52,7 @@ func (s *SessionClient) retryTimeout(e *fsm.Event) {
 		s.sendClose()
 
 	default:
-		log4go.Error("Invalide state when retry timer expired.")
+		log4go.Error("Invalid state when retry timer expired.", current)
 		return
 	}
 
@@ -75,7 +74,7 @@ func (s *SessionClient) deadTimeout(e *fsm.Event) {
 		s.Magic = 0
 
 	default:
-		log4go.Error("Invalide state when dead timer expired.")
+		log4go.Error("Invalid state when dead timer expired.", current)
 		return
 	}
 
@@ -238,4 +237,3 @@ func (s *SessionClient) RunClient() {
 		}
 	}
 }
-
