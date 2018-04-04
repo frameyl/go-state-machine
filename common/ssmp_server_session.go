@@ -7,7 +7,7 @@ import (
 	//"time"
 	//"fmt"
 	"github.com/frameyl/log4go"
-	"github.com/looplab/fsm"
+	"github.com/frameyl/fsm"
 )
 
 func (ss *SessionServer) deadTimerOn() error {

@@ -6,8 +6,8 @@ import (
 	//"math/rand"
 	"time"
 	//"fmt"
-	"github.com/looplab/fsm"
-    "github.com/frameyl/log4go"
+	"github.com/frameyl/fsm"
+  "github.com/frameyl/log4go"
 )
 
 // OutputChan is the channel for sending packets out
@@ -174,4 +174,3 @@ func (s *Session) clean(e *fsm.Event) {
 func (s *Session) Current() string {
 	return s.fsm.Current()
 }
-
