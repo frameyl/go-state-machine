@@ -1,4 +1,4 @@
-go-state-machine
+protocols-emu
 ================
 
 A experimental network protocol emulator by GoLang.
