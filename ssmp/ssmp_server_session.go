@@ -6,8 +6,8 @@ import (
 	//"math/rand"
 	//"time"
 	//"fmt"
-	"github.com/frameyl/log4go"
 	"github.com/frameyl/fsm"
+	"github.com/frameyl/log4go"
 )
 
 func (ss *SessionServer) deadTimerOn() error {

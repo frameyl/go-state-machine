@@ -3,8 +3,8 @@ package common
 import (
 	"bytes"
 	"fmt"
-    //"log"
-    "github.com/frameyl/log4go"
+	//"log"
+	"github.com/frameyl/log4go"
 )
 
 type SsmpDispatch struct {
@@ -124,12 +124,12 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 					disp.Discard++
 					continue
 				} else if disp.mode == SSMP_DISP_SVR {
-                    if disp.listener == nil {
-                        log4go.Critical("%s: Listener is not initialized", disp.name)
-                        disp.Discard++
-                        continue
-                    }
-                    
+					if disp.listener == nil {
+						log4go.Critical("%s: Listener is not initialized", disp.name)
+						disp.Discard++
+						continue
+					}
+
 					disp.listener.ListenerChan <- packet
 					disp.Handled++
 					continue
@@ -171,5 +171,5 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 }
 
 func (disp SsmpDispatch) DumpCounters() string {
-    return fmt.Sprintf("%s: Rx %d, Handled %d, Bypass %d, Discard %d", disp.name, disp.Rx, disp.Handled, disp.Bypass, disp.Discard)
+	return fmt.Sprintf("%s: Rx %d, Handled %d, Bypass %d, Discard %d", disp.name, disp.Rx, disp.Handled, disp.Bypass, disp.Discard)
 }

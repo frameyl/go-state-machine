@@ -10,23 +10,23 @@ import (
 const LISTENER_BUF_LEN = 100
 
 type SsmpListener struct {
-    ListenerChan chan []byte
-    SidNext uint32
-    IdNext int
-    ServerID string
-    OutputChan chan []byte
+	ListenerChan chan []byte
+	SidNext      uint32
+	IdNext       int
+	ServerID     string
+	OutputChan   chan []byte
 }
 
 func NewSsmpListener(svrid string, startId int, startSid uint32, outputChan chan []byte) *SsmpListener {
-    l := &SsmpListener{
-	    ListenerChan: make(chan []byte, LISTENER_BUF_LEN),
-	    SidNext: startSid,
-	    IdNext: startId,
-	    ServerID: svrid,
-        OutputChan: outputChan,
-    }
-    
-    return l
+	l := &SsmpListener{
+		ListenerChan: make(chan []byte, LISTENER_BUF_LEN),
+		SidNext:      startSid,
+		IdNext:       startId,
+		ServerID:     svrid,
+		OutputChan:   outputChan,
+	}
+
+	return l
 }
 
 func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
@@ -50,14 +50,14 @@ func (listener *SsmpListener) RunListener(disp *SsmpDispatch) {
 
 			// Create a new server session
 			session := NewServerSession(listener.IdNext, listener.SidNext, listener.ServerID, magic, listener.OutputChan)
-            go session.RunServer()
-            session.CntlChan <- S_CMD_START
+			go session.RunServer()
+			session.CntlChan <- S_CMD_START
 
-            listener.IdNext++
-            listener.SidNext++
+			listener.IdNext++
+			listener.SidNext++
 
 			disp.Register(magic, session.BufChan)
-			
+
 			session.BufChan <- pktBytes
 		}
 	}

@@ -2,9 +2,9 @@
 package common
 
 import (
-    //"fmt"
-    //"log"
-    "github.com/frameyl/log4go"
+	//"fmt"
+	//"log"
+	"github.com/frameyl/log4go"
 )
 
 type SessionGroupClient struct {
@@ -15,12 +15,12 @@ type SessionGroupClient struct {
 }
 
 type SessionGroupClientCounter struct {
-	Idle int
-	Connecting int
+	Idle          int
+	Connecting    int
 	Disconnecting int
-	Established int
-    SessionCnt
-    SessionClientCnt
+	Established   int
+	SessionCnt
+	SessionClientCnt
 }
 
 func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, outputChan chan []byte) *SessionGroupClient {
@@ -30,7 +30,7 @@ func NewSessionGroupClient(startid int, size int, dispatch *SsmpDispatch, output
 		magicChan: make(chan MagicReg, size/50),
 	}
 
-	for i, _ := range sg.sessions {
+	for i := range sg.sessions {
 		sg.sessions[i] = NewClientSession(startid+i, outputChan, sg.magicChan)
 		go sg.sessions[i].RunClient()
 	}
@@ -69,7 +69,7 @@ func (sg *SessionGroupClient) Register() {
 
 func (sg *SessionGroupClient) Stats() {
 	sg.SessionGroupClientCounter = SessionGroupClientCounter{}
-	
+
 	for _, s := range sg.sessions {
 		if s.Current() == "idle" {
 			sg.Idle++
@@ -80,27 +80,27 @@ func (sg *SessionGroupClient) Stats() {
 		} else {
 			sg.Connecting++
 		}
-        
-        sg.Tx += s.Tx
-        sg.TxHello += s.TxHello
-        sg.TxRequest += s.TxRequest
-        sg.TxConfirm += s.TxConfirm
-        sg.TxDisc += s.TxDisc
-        sg.Rx += s.Rx
-        sg.RxHello += s.RxHello
-        sg.RxReply += s.RxReply
-        sg.RxDisc += s.RxDisc
-        sg.Retry += s.Retry
+
+		sg.Tx += s.Tx
+		sg.TxHello += s.TxHello
+		sg.TxRequest += s.TxRequest
+		sg.TxConfirm += s.TxConfirm
+		sg.TxDisc += s.TxDisc
+		sg.Rx += s.Rx
+		sg.RxHello += s.RxHello
+		sg.RxReply += s.RxReply
+		sg.RxDisc += s.RxDisc
+		sg.Retry += s.Retry
 	}
 }
 
 func (sg *SessionGroupClient) Dump() {
 	sg.Stats()
-	
+
 	log4go.Info("Session Group Counter: Idle %d, Connecting %d, Disconecting %d, Established %d",
 		sg.Idle, sg.Connecting, sg.Disconnecting, sg.Established)
-    log4go.Info("Session Group Packet Counter: Tx %d, Rx %d, Retry %d, TxHello %d, RxHello %d, TxRequest %d, TxConfirm %d, RxReply %d",
-        sg.Tx, sg.Rx, sg.Retry, sg.TxHello, sg.RxHello, sg.TxRequest, sg.TxConfirm, sg.RxReply)
+	log4go.Info("Session Group Packet Counter: Tx %d, Rx %d, Retry %d, TxHello %d, RxHello %d, TxRequest %d, TxConfirm %d, RxReply %d",
+		sg.Tx, sg.Rx, sg.Retry, sg.TxHello, sg.RxHello, sg.TxRequest, sg.TxConfirm, sg.RxReply)
 }
 
 func (sg *SessionGroupClient) DumpAll() {
@@ -120,7 +120,7 @@ func NewSessionGroupServer(startid int, size int, svrid string, dispatch *SsmpDi
 		dispatch: dispatch,
 	}
 
-	for i, _ := range sg.sessions {
+	for i := range sg.sessions {
 		sg.sessions[i] = NewServerSession(startid+i, uint32(startid+i), svrid, 0, outputChan)
 	}
 

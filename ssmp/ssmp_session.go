@@ -7,7 +7,7 @@ import (
 	"time"
 	//"fmt"
 	"github.com/frameyl/fsm"
-  "github.com/frameyl/log4go"
+	"github.com/frameyl/log4go"
 )
 
 // OutputChan is the channel for sending packets out
@@ -107,41 +107,39 @@ func (s *Session) sendPacket(mtype MsgType) error {
 		pktLen += LEN_SESSION_ID
 	}
 
-    s.Tx++
+	s.Tx++
 	s.OutputChan <- buf.Bytes()
 
 	return nil
 }
 
 func (s *Session) sendHello() error {
-    s.TxHello++
+	s.TxHello++
 	return s.sendPacket(MSG_HELLO)
 }
 
 func (s *SessionClient) sendRequest() error {
-    s.TxRequest++
+	s.TxRequest++
 	return s.sendPacket(MSG_REQUEST)
 }
 
 func (s *SessionClient) sendConfirm() error {
-    s.TxConfirm++
+	s.TxConfirm++
 	return s.sendPacket(MSG_CONFIRM)
 }
 
 func (s *Session) sendClose() error {
-    s.TxDisc++
+	s.TxDisc++
 	return s.sendPacket(MSG_CLOSE)
 }
 
 func (s *SessionServer) sendReply() error {
-    s.TxReply++
+	s.TxReply++
 	return s.sendPacket(MSG_REPLY)
 }
 
 const SESSION_TIMEOUT_RETRY = 2 * time.Second
 const SESSION_TIMEOUT_DEAD = 5 * time.Second
-
-
 
 // enterState is a callback and will be called once a state transaction happens
 func (s *Session) enterState(e *fsm.Event) {
