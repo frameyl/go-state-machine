@@ -5,7 +5,7 @@ import (
 	//"log"
 	"bytes"
 	"flag"
-	"go-state-machine/ssmp"
+	"protocols-emu/ssmp"
 	"time"
 
 	"github.com/frameyl/log4go"
