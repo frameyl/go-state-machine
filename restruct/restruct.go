@@ -1,15 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"encoding/hex"
 	"encoding/binary"
-	"io/ioutil"
-	"os"
-
 	"gopkg.in/restruct.v1"
 )
 
 type Record struct {
-	Message string `struct:"[128]byte"`
+	Message string `struct:"[8]byte"`
 }
 
 type Container struct {
@@ -27,8 +26,19 @@ func main() {
 
 	// restruct.Unpack(data, binary.LittleEndian, &c)
 
-	var w Container
-	w.Version = 0xFB000000
-	w.NumRecord = 1
-	w.Records = ['abc', 'def']
+	var ws Container
+	ws.Version = 0xFB000000
+	ws.NumRecord = 1
+	ws.Records = []Record{Record{"abcde"}, Record{"abdcd"}}
+
+	var output []byte
+
+	output, _ = restruct.Pack(binary.LittleEndian, &ws)
+	fmt.Printf("%s", hex.Dump(output))
+
+	var rs Container
+	restruct.Unpack(output, binary.LittleEndian, &rs)
+	fmt.Printf("Version %x, #Rec %d, Rec#1 %s, Rec#2 %s", rs.Version, rs.NumRecord, rs.Records[0].Message, rs.Records[1].Message)
+
+	fmt.Printf("Invalid index %s", rs.Records[2].Message)
 }

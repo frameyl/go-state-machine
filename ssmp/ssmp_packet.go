@@ -25,6 +25,7 @@ const MSG_NAME_CONFIRM = "Confirm"
 const MSG_NAME_CLOSE = "Close"
 
 const MAGIC_NIL = 0
+const USE_RESTRUCT = false
 
 const (
 	MSG_UNKNOWN = iota
