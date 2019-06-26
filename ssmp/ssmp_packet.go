@@ -57,6 +57,23 @@ func GetMsgNameByType(mtype MsgType) string {
 	}
 }
 
+func GetMsgTypebyName(name string) MsgType {
+	switch name {
+	case MSG_NAME_HELLO:
+		return MSG_HELLO
+	case MSG_NAME_REQUEST:
+		return MSG_REQUEST
+	case MSG_NAME_REPLY:
+		return MSG_REPLY
+	case MSG_NAME_CONFIRM:
+		return MSG_CONFIRM
+	case MSG_NAME_CLOSE:
+		return MSG_CLOSE
+	default:
+		return MSG_UNKNOWN
+	}
+}
+
 func ReadFieldString(pkt *bytes.Reader, offset int, length int) (string, error) {
 	field := make([]byte, length)
 	n, _ := pkt.ReadAt(field, int64(offset))
@@ -90,20 +107,7 @@ func ReadMsgType(pkt *bytes.Reader) (MsgType, error) {
 		return MSG_UNKNOWN, err
 	}
 
-	switch msgTypeStr {
-	case MSG_NAME_HELLO:
-		return MSG_HELLO, nil
-	case MSG_NAME_REQUEST:
-		return MSG_REQUEST, nil
-	case MSG_NAME_REPLY:
-		return MSG_REPLY, nil
-	case MSG_NAME_CONFIRM:
-		return MSG_CONFIRM, nil
-	case MSG_NAME_CLOSE:
-		return MSG_CLOSE, nil
-	default:
-		return MSG_UNKNOWN, nil
-	}
+	return GetMsgTypebyName(msgTypeStr), nil
 }
 
 func ReadMagicNum(pkt *bytes.Reader) (magic uint64, err error) {

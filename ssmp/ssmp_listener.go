@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-const LISTENER_BUF_LEN = 100
+const LISTENER_BUF_LEN = 100000
 
 type SsmpListener struct {
 	ListenerChan chan []byte
