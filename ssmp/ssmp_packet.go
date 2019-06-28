@@ -78,7 +78,7 @@ func ReadFieldString(pkt *bytes.Reader, offset int, length int) (string, error) 
 	field := make([]byte, length)
 	n, _ := pkt.ReadAt(field, int64(offset))
 	if n != length {
-		return "", fmt.Errorf("Packet is too short during reading field len %n, %v,", length, n)
+		return "", fmt.Errorf("Packet is too short during reading field len %d, %d,", length, n)
 	}
 
 	index := bytes.IndexByte(field, 0)

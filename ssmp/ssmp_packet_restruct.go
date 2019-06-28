@@ -17,7 +17,7 @@ type SsmpHeader struct {
 }
 
 type SsmpSid struct {
-	SessionID uint32 `"struct:uint32"`
+	SessionID uint32 `struct:"uint32"`
 }
 
 type SsmpHello struct {

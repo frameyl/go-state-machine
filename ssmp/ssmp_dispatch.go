@@ -3,6 +3,7 @@ package common
 import (
 	"bytes"
 	"fmt"
+
 	//"log"
 	"github.com/frameyl/log4go"
 )
@@ -167,7 +168,6 @@ func (disp *SsmpDispatch) Handle(nextStep chan []byte) (err error) {
 		}
 	}
 
-	return nil
 }
 
 func (disp SsmpDispatch) DumpCounters() string {

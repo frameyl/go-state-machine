@@ -25,3 +25,4 @@ _testmain.go
 *.log
 *.out
 ~$*
+allinone/debug.test
